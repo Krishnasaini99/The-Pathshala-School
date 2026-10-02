@@ -1,0 +1,72 @@
+<main>
+  <section class="hero">
+    <div class="wrap hero-in">
+      <div>
+        <h1>Welcome to <span>The PathShala School</span></h1>
+        <p class="lead">Padhai, Sanskar aur Ujjwal Bhavishya — Nursery se Class 12 tak quality education, khel aur sanskritik vikas ke saath.</p>
+        <div class="hero-btns">
+          <a routerLink="/contact" class="btn big btn-admit">Admission 2026-27</a>
+          <a routerLink="/about" class="btn big btn-about">About School</a>
+        </div>
+        <div class="hero-points">
+          <span>✅ CGBSE Pattern - English Medium</span>
+          <span>✅ Smart Classes & Computer Lab</span>
+          <span>✅ Offline-first School OS</span>
+        </div>
+      </div>
+      <div class="hero-card">
+        <div class="hero-card-head">📊 School OS Live</div>
+        <div class="hero-stats">
+          <div><b>{{ store.db.students.length }}</b><small>Students</small></div>
+          <div><b>{{ store.db.staff.length }}</b><small>Staff</small></div>
+          <div><b>{{ store.rs(store.feesCollected()) }}</b><small>Fees Collected</small></div>
+          <div><b>{{ attendToday }}</b><small>Attendance Today</small></div>
+        </div>
+        <p class="muted">Ye data School Dashboard se live aata hai (offline-first, browser me safe).</p>
+        <button class="btn primary" routerLink="/dashboard">Open Dashboard →</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="section video-sec">
+    <div class="wrap">
+      <h2>🏫 Campus Life — PathShala</h2>
+      <p class="center muted">Dekho hamare school ka mahaul — padhai, khel aur khushiyan.</p>
+      <div class="video-banner">
+        <iframe *ngIf="ytEmbed" [src]="ytEmbed" title="School video" frameborder="0" allowfullscreen
+          style="width:100%;height:480px;border:0"></iframe>
+        <video *ngIf="!ytEmbed" autoplay muted loop playsinline preload="metadata"
+          [src]="localVideoUrl || defaultVideo"></video>
+        <div class="video-overlay"><span>▶ Campus Video</span></div>
+      </div>
+      <p class="center muted" *ngIf="!localVideoUrl && !ytEmbed">Apna school video ho to dashboard → Media se badlo.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <h2>Explore PathShala</h2>
+      <p class="center muted">Har section ka apna page — tab par click karo, page khulega.</p>
+      <div class="grid3">
+        <div class="card prog click" routerLink="/courses"><div class="emoji">📚</div><h3>Courses</h3><p>Pre-Primary se Secondary, Sports aur Arts tak →</p></div>
+        <div class="card prog click" routerLink="/ebooks"><div class="emoji">📘</div><h3>E-Books</h3><p>Class-wise books + free PDF downloads →</p></div>
+        <div class="card prog click" routerLink="/videos"><div class="emoji">🎬</div><h3>Videos</h3><p>Learning videos har class ke liye →</p></div>
+        <div class="card prog click" routerLink="/teachers"><div class="emoji">👩‍🏫</div><h3>Our Teachers</h3><p>Anubhavi aur caring faculty →</p></div>
+        <div class="card prog click" routerLink="/gallery"><div class="emoji">📸</div><h3>Gallery & Notices</h3><p>Photos aur notice board →</p></div>
+        <div class="card prog click" routerLink="/contact"><div class="emoji">📞</div><h3>Contact & Admission</h3><p>Form bhariye, call aayega →</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section alt">
+    <div class="wrap">
+      <h2>Latest Notices</h2>
+      <ul class="notices">
+        <li *ngFor="let n of store.db.notices.slice(0, 3)"><span>{{ n.t }}</span><small class="muted">{{ n.d }}</small></li>
+      </ul>
+      <p class="center"><button class="btn ghost" routerLink="/gallery">All Notices →</button></p>
+    </div>
+  </section>
+
+  <footer><div class="wrap foot"><b>The PathShala School</b> © 2026. All rights reserved. • Offline-first School OS inside 🔐</div></footer>
+</main>

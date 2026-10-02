@@ -1,0 +1,177 @@
+<main>
+  <section id="home" class="hero">
+    <div class="wrap hero-in">
+      <div>
+        <h1>Welcome to <span>The PathShala School</span></h1>
+        <p class="lead">Padhai, Sanskar aur Ujjwal Bhavishya — Nursery se Class 12 tak quality education, khel aur sanskritik vikas ke saath.</p>
+        <div class="hero-btns">
+          <a href="#admission" class="btn big btn-admit">Admission 2026-27</a>
+          <a href="#about" class="btn big btn-about">About School</a>
+        </div>
+        <div class="hero-points">
+          <span>✅ CGBSE Pattern - English Medium</span>
+          <span>✅ Smart Classes & Computer Lab</span>
+          <span>✅ Offline-first School OS</span>
+        </div>
+      </div>
+      <div class="hero-card">
+        <div class="hero-card-head">📊 School OS Live</div>
+        <div class="hero-stats">
+          <div><b>{{ store.db.students.length }}</b><small>Students</small></div>
+          <div><b>{{ store.db.staff.length }}</b><small>Staff</small></div>
+          <div><b>{{ store.rs(store.feesCollected()) }}</b><small>Fees Collected</small></div>
+          <div><b>{{ attendToday }}</b><small>Attendance Today</small></div>
+        </div>
+        <p class="muted">Ye data School Dashboard se live aata hai (offline-first, browser me safe).</p>
+        <button class="btn primary" (click)="openDashboard()">Open Dashboard →</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="about" class="section">
+    <div class="wrap">
+      <h2>About Our School</h2>
+      <p class="center muted">10+ saalon se shiksha ke kshetra me — {{ 500 + store.db.students.length }}+ students, {{ 17 + store.db.staff.length }}+ expert teachers.</p>
+      <div class="two">
+        <div class="card">
+          <h3>Hamara Mission</h3>
+          <p>Har bachche ko achhi padhai, achhe sanskar aur confidence dena hi The PathShala School ka lakshya hai.</p>
+          <ul class="tick">
+            <li>✅ CGBSE Pattern - English Medium</li>
+            <li>✅ Smart Classes & Computer Lab</li>
+            <li>✅ Sports, Music, Art & Dance</li>
+            <li>✅ School Bus Facility</li>
+            <li>✅ Scholarship for Meritorious Students</li>
+            <li>✅ Student, Staff, Fees, Attendance & Expense Management (School OS)</li>
+            <li>✅ Encrypted Backup & Bright/Dark Theme</li>
+          </ul>
+        </div>
+        <div class="card img-card">
+          <div class="img-ph">🏫<span>The PathShala Campus</span></div>
+          <div class="stats4">
+            <div><b>500+</b><small>Students</small></div>
+            <div><b>20+</b><small>Teachers</small></div>
+            <div><b>10+</b><small>Years Experience</small></div>
+            <div><b>100%</b><small>Board Result</small></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="programs" class="section alt">
+    <div class="wrap">
+      <h2>Our Programs</h2>
+      <p class="center muted">Har age group ke liye complete development program.</p>
+      <div class="grid3">
+        <div class="card prog click" *ngFor="let p of programs" (click)="showZoom(p.img, p.t, p.info)">
+          <img class="prog-img" loading="lazy" [alt]="p.t" [src]="p.img" /><h3>{{ p.t }}</h3><p>{{ p.d }} <b class="muted">Tap for details →</b></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="teachers" class="section">
+    <div class="wrap">
+      <h2>Our Teachers</h2>
+      <p class="center muted">Anubhavi aur caring faculty.</p>
+      <div class="grid3">
+        <div class="card prog click" *ngFor="let s of store.db.staff.slice(0, 6); let i = index" (click)="showZoom(tPhoto(i), s.name, s.role + ' - ' + s.sub + '. ' + tBio(i))">
+          <img class="prog-img" loading="lazy" [alt]="s.name" [src]="tPhoto(i)" /><h3>{{ s.name }}</h3><p>{{ s.role }} - {{ s.sub }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="notices" class="section alt">
+    <div class="wrap">
+      <h2>Notice Board & Gallery</h2>
+      <div class="tabs">
+        <button class="tab" [class.active]="tab === 'notices'" (click)="tab = 'notices'">Notices</button>
+        <button class="tab" [class.active]="tab === 'gallery'" (click)="tab = 'gallery'">Gallery</button>
+      </div>
+      <ul class="notices" *ngIf="tab === 'notices'">
+        <li *ngFor="let n of store.db.notices"><span>{{ n.t }}</span><small class="muted">{{ n.d }}</small></li>
+      </ul>
+      <div class="grid3" *ngIf="tab === 'gallery'">
+        <div class="card prog click" *ngFor="let g of gallery" (click)="showZoom(g.img, g.t, g.info)">
+          <img class="prog-img" loading="lazy" [alt]="g.t" [src]="g.img" /><h3>{{ g.t }}</h3><p>{{ g.d }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="ebooks" class="section alt">
+    <div class="wrap">
+      <h2>📚 EBook Library</h2>
+      <p class="center muted">Class chuno — uski saari books khul jayengi. Kisi book par click karke padho.</p>
+      <div class="tabs">
+        <button class="tab" *ngFor="let c of ebookClasses" [class.active]="ebookClass === c" (click)="ebookClass = c">{{ c }}</button>
+      </div>
+      <div class="grid3">
+        <div class="card book" *ngFor="let b of booksOf(ebookClass)">
+          <div class="bcover" [ngClass]="coverClass(b.subject)">
+            <div class="bclass">{{ ebookClass }}</div>
+            <div class="btitle">{{ b.title }}</div>
+            <div class="bsub">{{ b.subject }}</div>
+            <div class="bpub">PathShala Prakashan • {{ b.pages }} pages</div>
+          </div>
+          <h3>{{ b.title }}</h3>
+          <p class="muted">{{ b.subject }} • {{ b.chapters.length }} chapters</p>
+          <button class="btn primary" (click)="openBook = b">📖 Read Book</button>
+          <a class="btn admit" *ngIf="b.file" [href]="b.file" download style="margin-left:6px;text-decoration:none;display:inline-block">⬇ Download PDF</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="modal" *ngIf="zoom">
+    <div class="modal-box reader">
+      <img class="zoom-img" [src]="zoom.img" [alt]="zoom.title" />
+      <h3>{{ zoom.title }}</h3>
+      <p>{{ zoom.desc }}</p>
+      <button class="btn primary" (click)="zoom = null">Close</button>
+    </div>
+  </div>
+
+  <div class="modal" *ngIf="openBook">
+    <div class="modal-box reader">
+      <div class="row between"><h3>📖 {{ openBook.title }}</h3><button class="btn ghost" (click)="openBook = null">✖</button></div>
+      <div class="chapter" *ngFor="let ch of openBook.chapters; let i = index">
+        <h4>Chapter {{ i + 1 }}: {{ ch.t }}</h4>
+        <p *ngFor="let p of ch.body">{{ p }}</p>
+      </div>
+      <button class="btn primary" (click)="openBook = null">Close Book</button>
+    </div>
+  </div>
+
+  <section id="admission" class="section">
+    <div class="wrap">
+      <h2>Admission Enquiry</h2>
+      <p class="center muted">Form bhariye — school office se call aayega.</p>
+      <form class="card form" (ngSubmit)="submitEq()">
+        <label>Student ka naam *<input [(ngModel)]="eq.name" name="name" required placeholder="e.g. Aarav Sharma" /></label>
+        <label>Mobile number *<input [(ngModel)]="eq.phone" name="phone" required maxlength="10" placeholder="10-digit mobile" /></label>
+        <label>Class select karein
+          <select [(ngModel)]="eq.cls" name="cls"><option *ngFor="let c of classes">{{ c }}</option></select>
+        </label>
+        <label>Message (optional)<input [(ngModel)]="eq.msg" name="msg" placeholder="Kuch poochna ho to likhein" /></label>
+        <button class="btn primary" type="submit">Submit Enquiry</button>
+        <p class="ok" *ngIf="eqOk">✅ Enquiry mil gayi! Dashboard → Enquiries me dekhein.</p>
+      </form>
+    </div>
+  </section>
+
+  <section id="contact" class="section alt">
+    <div class="wrap">
+      <h2>Contact Us</h2>
+      <div class="grid3">
+        <div class="card"><h3>📍 Address</h3><p>The PathShala School,<br />Main Road, Saragaon,<br />Raipur, Chhattisgarh 493225</p></div>
+        <div class="card"><h3>📞 Phone</h3><p>+91 88716 26560<br />Mon-Sat: 8 AM - 2 PM</p></div>
+        <div class="card"><h3>⏰ Timing</h3><p>School: 8 AM - 2 PM<br />Office: 9 AM - 4 PM</p></div>
+      </div>
+    </div>
+  </section>
+
+  <footer><div class="wrap foot"><b>The PathShala School</b> © 2026. All rights reserved. • Offline-first School OS inside 🔐 • Angular version</div></footer>
+</main>

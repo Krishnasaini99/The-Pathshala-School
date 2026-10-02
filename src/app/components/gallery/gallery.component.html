@@ -1,0 +1,30 @@
+<main>
+  <section class="section">
+    <div class="wrap">
+      <h2>Notice Board & Gallery</h2>
+      <div class="tabs">
+        <button class="tab" [class.active]="tab === 'notices'" (click)="tab = 'notices'">Notices</button>
+        <button class="tab" [class.active]="tab === 'gallery'" (click)="tab = 'gallery'">Gallery</button>
+      </div>
+      <ul class="notices" *ngIf="tab === 'notices'">
+        <li *ngFor="let n of store.db.notices"><span>{{ n.t }}</span><small class="muted">{{ n.d }}</small></li>
+      </ul>
+      <div class="grid3" *ngIf="tab === 'gallery'">
+        <div class="card prog click" *ngFor="let g of gallery" (click)="zoom = { img: g.img, title: g.t, desc: g.info }">
+          <img class="prog-img" loading="lazy" [alt]="g.t" [src]="g.img" /><h3>{{ g.t }}</h3><p>{{ g.d }}</p>
+        </div>
+      </div>
+      <p class="center" style="margin-top:18px"><button class="btn ghost" routerLink="/">← Home</button></p>
+    </div>
+  </section>
+  <footer><div class="wrap foot"><b>The PathShala School</b> © 2026. All rights reserved.</div></footer>
+</main>
+
+<div class="modal" *ngIf="zoom">
+  <div class="modal-box reader">
+    <img class="zoom-img" [src]="zoom.img" [alt]="zoom.title" />
+    <h3>{{ zoom.title }}</h3>
+    <p>{{ zoom.desc }}</p>
+    <button class="btn primary" (click)="zoom = null">Close</button>
+  </div>
+</div>

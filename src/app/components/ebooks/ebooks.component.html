@@ -1,0 +1,40 @@
+<main>
+  <section class="section">
+    <div class="wrap">
+      <h2>📚 E-Books Library</h2>
+      <p class="center muted">Class chuno — uski saari books khul jayengi. Kisi book par click karke padho ya PDF download karo.</p>
+      <div class="tabs">
+        <button class="tab" *ngFor="let c of ebookClasses" [class.active]="ebookClass === c" (click)="ebookClass = c">{{ c }}</button>
+      </div>
+      <div class="grid3">
+        <div class="card book" *ngFor="let b of booksOf(ebookClass)">
+          <div class="bcover" [ngClass]="coverClass(b.subject)">
+            <div class="bclass">{{ ebookClass }}</div>
+            <div class="btitle">{{ b.title }}</div>
+            <div class="bsub">{{ b.subject }}</div>
+            <div class="bpub">PathShala Prakashan • {{ b.pages }} pages</div>
+          </div>
+          <h3>{{ b.title }}</h3>
+          <p class="muted">{{ b.subject }} • {{ b.chapters.length }} chapters</p>
+          <div class="row" style="justify-content:center">
+            <button class="btn primary" (click)="openBook = b">📖 Read Book</button>
+            <a class="btn admit" *ngIf="b.file" [href]="b.file" download style="text-decoration:none">⬇ Download PDF</a>
+          </div>
+        </div>
+      </div>
+      <p class="center" style="margin-top:18px"><button class="btn ghost" routerLink="/">← Back to Website</button></p>
+    </div>
+  </section>
+  <footer><div class="wrap foot"><b>The PathShala School</b> © 2026. All rights reserved. • E-Books Library 📚</div></footer>
+</main>
+
+<div class="modal" *ngIf="openBook">
+  <div class="modal-box reader">
+    <div class="row between"><h3>📖 {{ openBook.title }}</h3><button class="btn ghost" (click)="openBook = null">✖</button></div>
+    <div class="chapter" *ngFor="let ch of openBook.chapters; let i = index">
+      <h4>Chapter {{ i + 1 }}: {{ ch.t }}</h4>
+      <p *ngFor="let p of ch.body">{{ p }}</p>
+    </div>
+    <button class="btn primary" (click)="openBook = null">Close Book</button>
+  </div>
+</div>

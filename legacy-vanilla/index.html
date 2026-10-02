@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The PathShala School — Padhai, Sanskar aur Ujjwal Bhavishya</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap topbar-in">
+    <div class="brand">
+      <div class="logo">PS</div>
+      <div>
+        <div class="brand-name">The PathShala School</div>
+        <div class="brand-sub">Padhai • Sanskar • Ujjwal Bhavishya</div>
+      </div>
+    </div>
+    <nav class="nav" id="mainNav">
+      <a href="#home">Home</a>
+      <a href="#about">About</a>
+      <a href="#programs">Programs</a>
+      <a href="#teachers">Teachers</a>
+      <a href="#notices">Notices</a>
+      <a href="#admission">Admission</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <div class="top-actions">
+      <button id="themeBtn" class="btn ghost" title="Bright / Dark theme">🌙 Dark</button>
+      <button id="loginBtn" class="btn primary">🔐 School Login</button>
+      <button id="menuBtn" class="btn ghost only-mobile">☰</button>
+    </div>
+  </div>
+</header>
+
+<!-- PUBLIC SITE -->
+<main id="publicSite">
+  <section id="home" class="hero">
+    <div class="wrap hero-in">
+      <div>
+        <h1>Welcome to <span>The PathShala School</span></h1>
+        <p class="lead">Padhai, Sanskar aur Ujjwal Bhavishya — Nursery se Class 12 tak quality education, khel aur sanskritik vikas ke saath.</p>
+        <div class="hero-btns">
+          <a href="#admission" class="btn primary big">Admission 2026-27</a>
+          <a href="#about" class="btn outline big">About School</a>
+        </div>
+        <div class="hero-points">
+          <span>✅ CGBSE Pattern - English Medium</span>
+          <span>✅ Smart Classes & Computer Lab</span>
+          <span>✅ Offline-first School OS</span>
+        </div>
+      </div>
+      <div class="hero-card">
+        <div class="hero-card-head">📊 School OS Live</div>
+        <div class="hero-stats">
+          <div><b id="hsStudents">0</b><small>Students</small></div>
+          <div><b id="hsStaff">0</b><small>Staff</small></div>
+          <div><b id="hsFees">₹0</b><small>Fees Collected</small></div>
+          <div><b id="hsAttend">—</b><small>Attendance Today</small></div>
+        </div>
+        <p class="muted">Ye data isi website ke School Dashboard se live aata hai (offline-first, browser me safe).</p>
+        <button class="btn primary" onclick="openDashboard()">Open Dashboard →</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="about" class="section">
+    <div class="wrap">
+      <h2>About Our School</h2>
+      <p class="center muted">10+ saalon se shiksha ke kshetra me — <span id="stStudents">500+</span> students, <span id="stStaff">20+</span> expert teachers.</p>
+      <div class="two">
+        <div class="card">
+          <h3>Hamara Mission</h3>
+          <p>Har bachche ko achhi padhai, achhe sanskar aur confidence dena hi The PathShala School ka lakshya hai.</p>
+          <ul class="tick">
+            <li>✅ CGBSE Pattern - English Medium</li>
+            <li>✅ Smart Classes & Computer Lab</li>
+            <li>✅ Sports, Music, Art & Dance</li>
+            <li>✅ School Bus Facility</li>
+            <li>✅ Scholarship for Meritorious Students</li>
+            <li>✅ Student, Staff, Fees, Attendance & Expense Management (School OS)</li>
+            <li>✅ Encrypted Backup & Bright/Dark Theme</li>
+          </ul>
+        </div>
+        <div class="card img-card">
+          <div class="img-ph">🏫<span>The PathShala Campus</span></div>
+          <div class="stats4">
+            <div><b>500+</b><small>Students</small></div>
+            <div><b>20+</b><small>Teachers</small></div>
+            <div><b>10+</b><small>Years Experience</small></div>
+            <div><b>100%</b><small>Board Result</small></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="programs" class="section alt">
+    <div class="wrap">
+      <h2>Our Programs</h2>
+      <p class="center muted">Har age group ke liye complete development program.</p>
+      <div class="grid3">
+        <div class="card"><div class="emoji">🧒</div><h3>Pre-Primary (Nursery-UKG)</h3><p>Khel-khel me seekhna, phonics, rhymes aur activity based learning.</p></div>
+        <div class="card"><div class="emoji">📚</div><h3>Primary (1-5)</h3><p>Strong foundation in Maths, English, Hindi, EVS + Computer.</p></div>
+        <div class="card"><div class="emoji">🔬</div><h3>Middle (6-8)</h3><p>Science labs, Olympiad, spoken English aur project work.</p></div>
+        <div class="card"><div class="emoji">🎓</div><h3>Secondary (9-12)</h3><p>Board preparation, career counselling, JEE/NEET foundation.</p></div>
+        <div class="card"><div class="emoji">⚽</div><h3>Sports</h3><p>Cricket, Football, Kho-Kho, Athletics aur annual sports day.</p></div>
+        <div class="card"><div class="emoji">🎨</div><h3>Arts & Culture</h3><p>Music, Dance, Drawing, Drama aur educational trips.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="teachers" class="section">
+    <div class="wrap">
+      <h2>Our Teachers</h2>
+      <p class="center muted">Anubhavi aur caring faculty.</p>
+      <div class="grid3" id="publicTeachers"></div>
+    </div>
+  </section>
+
+  <section id="notices" class="section alt">
+    <div class="wrap">
+      <h2>Notice Board & Gallery</h2>
+      <div class="tabs">
+        <button class="tab active" data-tab="noticesTab">Notices</button>
+        <button class="tab" data-tab="galleryTab">Gallery</button>
+      </div>
+      <div id="noticesTab" class="tabpanel"><ul id="publicNotices" class="notices"></ul></div>
+      <div id="galleryTab" class="tabpanel hidden">
+        <div class="grid3">
+          <div class="card">📸<b>Annual Function</b><p>Sanskritik कार्यक्रम की झलक</p></div>
+          <div class="card">🏆<b>Sports Day</b><p>15 December — school ground</p></div>
+          <div class="card">🔬<b>Science Exhibition</b><p>Students ke projects</p></div>
+          <div class="card">🎨<b>Art & Craft</b><p>Drawing competition</p></div>
+          <div class="card">🚌<b>Educational Trip</b><p>Learning outside classroom</p></div>
+          <div class="card">💻<b>Computer Lab</b><p>Smart classes</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="admission" class="section">
+    <div class="wrap">
+      <h2>Admission Enquiry</h2>
+      <p class="center muted">Form bhariye — school office se call aayega.</p>
+      <form id="enquiryForm" class="card form">
+        <label>Student ka naam *<input id="eqName" required placeholder="e.g. Aarav Sharma" /></label>
+        <label>Mobile number *<input id="eqPhone" required pattern="[0-9]{10}" maxlength="10" placeholder="10-digit mobile" /></label>
+        <label>Class select karein
+          <select id="eqClass">
+            <option>Nursery-UKG</option><option>Class 1-5</option>
+            <option>Class 6-8</option><option>Class 9-10</option><option>Class 11-12</option>
+          </select>
+        </label>
+        <label>Message (optional)<input id="eqMsg" placeholder="Kuch poochna ho to likhein" /></label>
+        <button class="btn primary" type="submit">Submit Enquiry</button>
+        <p id="eqOk" class="ok hidden">✅ Enquiry mil gayi! Dashboard → Enquiries me dekhein.</p>
+      </form>
+    </div>
+  </section>
+
+  <section id="contact" class="section alt">
+    <div class="wrap">
+      <h2>Contact Us</h2>
+      <div class="grid3">
+        <div class="card"><h3>📍 Address</h3><p>The PathShala School,<br>Main Road, Saragaon,<br>Raipur, Chhattisgarh 493225</p></div>
+        <div class="card"><h3>📞 Phone</h3><p>+91 88716 26560<br>Mon-Sat: 8 AM - 2 PM</p></div>
+        <div class="card"><h3>⏰ Timing</h3><p>School: 8 AM - 2 PM<br>Office: 9 AM - 4 PM</p></div>
+      </div>
+    </div>
+  </section>
+
+  <footer><div class="wrap foot"><b>The PathShala School</b> © 2026. All rights reserved. • Offline-first School OS inside 🔐</div></footer>
+</main>
+
+<!-- LOGIN MODAL -->
+<div id="loginModal" class="modal hidden">
+  <div class="modal-box">
+    <h3>🔐 School Login</h3>
+    <p class="muted">Demo login — <code>admin / pathshala123</code></p>
+    <label>Username<input id="lgUser" value="admin" /></label>
+    <label>Password<input id="lgPass" type="password" value="pathshala123" /></label>
+    <p id="lgErr" class="err hidden">❌ Galat username/password</p>
+    <div class="row">
+      <button class="btn primary" id="doLogin">Login</button>
+      <button class="btn ghost" id="closeLogin">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<main id="dashboard" class="hidden">
+  <div class="dash-top wrap">
+    <div><h2>🏫 PathShala School OS</h2><p class="muted">Offline-first • Student • Staff • Fees • Attendance • Expense • Backup • Themes</p></div>
+    <div class="row">
+      <button class="btn ghost" id="backSite">← Website</button>
+      <button class="btn ghost" id="themeBtn2">🌙</button>
+      <button class="btn danger" id="logoutBtn">Logout</button>
+    </div>
+  </div>
+  <div class="wrap dash-nav">
+    <button data-page="overview" class="dtab active">Overview</button>
+    <button data-page="students" class="dtab">Students</button>
+    <button data-page="staff" class="dtab">Staff</button>
+    <button data-page="attendance" class="dtab">Attendance</button>
+    <button data-page="fees" class="dtab">Fees</button>
+    <button data-page="expenses" class="dtab">Expenses</button>
+    <button data-page="noticesM" class="dtab">Notices</button>
+    <button data-page="enquiries" class="dtab">Enquiries <span id="eqCount" class="badge">0</span></button>
+    <button data-page="backup" class="dtab">Backup</button>
+  </div>
+
+  <div class="wrap">
+    <section id="pg-overview" class="dpage">
+      <div class="grid4" id="ovCards"></div>
+      <div class="two">
+        <div class="card"><h3>Recent Fees</h3><div id="ovFees"></div></div>
+        <div class="card"><h3>Recent Expenses</h3><div id="ovExp"></div></div>
+      </div>
+    </section>
+
+    <section id="pg-students" class="dpage hidden">
+      <div class="card">
+        <h3>Add / Edit Student</h3>
+        <div class="frow">
+          <input id="sName" placeholder="Name *" />
+          <select id="sClass"><option>Nursery-UKG</option><option>Class 1-5</option><option>Class 6-8</option><option>Class 9-10</option><option>Class 11-12</option></select>
+          <input id="sRoll" placeholder="Roll No" />
+          <select id="sGender"><option>Boy</option><option>Girl</option><option>Other</option></select>
+          <input id="sPhone" placeholder="Parent Mobile" maxlength="10" />
+          <input id="sAddr" placeholder="Address" />
+          <button class="btn primary" id="sSave">Save</button>
+          <button class="btn ghost hidden" id="sCancel">Cancel</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="row between"><h3>Students (<span id="sCount">0</span>)</h3>
+          <div class="row"><input id="sSearch" placeholder="🔍 Search name/roll..." /><button class="btn ghost" id="sCsv">⬇ CSV</button></div>
+        </div>
+        <div class="table-wrap"><table id="sTable"><thead><tr><th>Name</th><th>Class</th><th>Roll</th><th>Phone</th><th>Action</th></tr></thead><tbody></tbody></table></div>
+      </div>
+    </section>
+
+    <section id="pg-staff" class="dpage hidden">
+      <div class="card">
+        <h3>Add / Edit Staff</h3>
+        <div class="frow">
+          <input id="tName" placeholder="Name *" />
+          <input id="tRole" placeholder="Role (e.g. Principal, Teacher)" />
+          <input id="tSub" placeholder="Subject" />
+          <input id="tPhone" placeholder="Mobile" maxlength="10" />
+          <input id="tSal" type="number" placeholder="Monthly Salary ₹" />
+          <button class="btn primary" id="tSave">Save</button>
+          <button class="btn ghost hidden" id="tCancel">Cancel</button>
+        </div>
+      </div>
+      <div class="card"><h3>Staff (<span id="tCount">0</span>)</h3>
+        <div class="table-wrap"><table id="tTable"><thead><tr><th>Name</th><th>Role</th><th>Subject</th><th>Salary</th><th>Action</th></tr></thead><tbody></tbody></table></div>
+      </div>
+    </section>
+
+    <section id="pg-attendance" class="dpage hidden">
+      <div class="card">
+        <div class="row between"><h3>Attendance — <input type="date" id="aDate" /></h3>
+          <div class="row"><button class="btn ghost" id="aAllP">All Present</button><button class="btn primary" id="aSave">💾 Save Day</button></div>
+        </div>
+        <p class="muted">Present / Absent / Leave tick karein, phir Save Day dabayein. Data offline save hota hai.</p>
+        <div id="aList"></div>
+      </div>
+    </section>
+
+    <section id="pg-fees" class="dpage hidden">
+      <div class="card">
+        <h3>Collect Fee</h3>
+        <div class="frow">
+          <select id="fStudent"></select>
+          <input id="fAmt" type="number" placeholder="Amount ₹ *" />
+          <input id="fMonth" placeholder="Month (e.g. Sept 2026)" />
+          <select id="fStatus"><option value="paid">Paid</option><option value="pending">Pending</option></select>
+          <button class="btn primary" id="fSave">Save</button>
+        </div>
+      </div>
+      <div class="card"><h3>Fee Records — Collected: <span id="fTot">₹0</span> • Pending: <span id="fPend">₹0</span></h3>
+        <div class="table-wrap"><table id="fTable"><thead><tr><th>Date</th><th>Student</th><th>Amount</th><th>Status</th><th>Action</th></tr></thead><tbody></tbody></table></div>
+      </div>
+    </section>
+
+    <section id="pg-expenses" class="dpage hidden">
+      <div class="card">
+        <h3>Add Expense</h3>
+        <div class="frow">
+          <input id="eTitle" placeholder="Title (e.g. Electricity) *" />
+          <input id="eCat" placeholder="Category" />
+          <input id="eAmt" type="number" placeholder="Amount ₹ *" />
+          <input id="eDate" type="date" />
+          <button class="btn primary" id="eSave">Save</button>
+        </div>
+      </div>
+      <div class="card"><h3>Total Expense: <span id="eTot">₹0</span></h3>
+        <div class="table-wrap"><table id="eTable"><thead><tr><th>Date</th><th>Title</th><th>Amount</th><th>Action</th></tr></thead><tbody></tbody></table></div>
+      </div>
+    </section>
+
+    <section id="pg-noticesM" class="dpage hidden">
+      <div class="card">
+        <h3>Publish Notice (website par turant dikhega)</h3>
+        <div class="frow"><input id="nText" placeholder="📢 Notice likhein... *" style="flex:1" /><button class="btn primary" id="nSave">Publish</button></div>
+      </div>
+      <div class="card"><h3>All Notices</h3><ul id="nList" class="notices"></ul></div>
+    </section>
+
+    <section id="pg-enquiries" class="dpage hidden">
+      <div class="card"><h3>Admission Enquiries</h3><div class="table-wrap"><table id="qTable"><thead><tr><th>Date</th><th>Name</th><th>Phone</th><th>Class</th><th>Status</th><th>Action</th></tr></thead><tbody></tbody></table></div></div>
+    </section>
+
+    <section id="pg-backup" class="dpage hidden">
+      <div class="two">
+        <div class="card"><h3>🔒 Encrypted Backup (Google Drive ready)</h3>
+          <p class="muted">Export encrypted text → Google Drive me paste karke rakhein. Wapas laane ke liye Import me paste karein.</p>
+          <div class="row"><button class="btn primary" id="bExport">⬇ Export JSON</button><button class="btn ghost" id="bEnc">🔒 Encrypted Text</button></div>
+          <textarea id="bText" rows="6" placeholder="Encrypted backup yahan dikhega / paste karein..."></textarea>
+          <div class="row"><button class="btn primary" id="bImport">⬆ Import</button><button class="btn danger" id="bWipe">🗑 All Data Clear</button></div>
+        </div>
+        <div class="card"><h3>ℹ Secure Update & Theme</h3>
+          <p>Version: <b>v1.0.0 (PathShala OS)</b><br>Storage: <b>Offline-first (localStorage)</b><br>Theme: <b>Bright / Dark</b> support top button se.</p>
+          <p class="muted">Bharat AI School OS features covered: Student+Staff management, Fees, Attendance, Expense, Encrypted Backup, Themes.</p>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>

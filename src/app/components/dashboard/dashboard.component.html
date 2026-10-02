@@ -1,0 +1,212 @@
+<div class="dash-top wrap">
+  <div><h2>🏫 PathShala School OS</h2><p class="muted">Offline-first • Student • Staff • Fees • Attendance • Expense • Backup • Themes</p></div>
+  <div class="row">
+    <button class="btn ghost" routerLink="/">← Website</button>
+    <button class="btn primary" (click)="page='media'">📸 Media</button>
+    <button class="btn danger" routerLink="/" (click)="auth.logout()">Logout</button>
+  </div>
+</div>
+<div class="wrap dash-nav">
+  <button class="dtab" [class.active]="page==='overview'" (click)="page='overview'">Overview</button>
+  <button class="dtab" [class.active]="page==='students'" (click)="page='students'">Students</button>
+  <button class="dtab" [class.active]="page==='staff'" (click)="page='staff'">Staff</button>
+  <button class="dtab" [class.active]="page==='attendance'" (click)="page='attendance'">Attendance</button>
+  <button class="dtab" [class.active]="page==='fees'" (click)="page='fees'">Fees</button>
+  <button class="dtab" [class.active]="page==='expenses'" (click)="page='expenses'">Expenses</button>
+  <button class="dtab" [class.active]="page==='noticesM'" (click)="page='noticesM'">Notices</button>
+  <button class="dtab" [class.active]="page==='enquiries'" (click)="page='enquiries'">Enquiries <span class="badge">{{ newEqCount }}</span></button>
+  <button class="dtab" [class.active]="page==='media'" (click)="page='media'">📸 Media</button>
+  <button class="dtab" [class.active]="page==='settings'" (click)="page='settings'">🔑 Account</button>
+  <button class="dtab" [class.active]="page==='backup'" (click)="page='backup'">Backup</button>
+</div>
+
+<div class="wrap" style="padding-bottom:60px">
+  <section *ngIf="page==='overview'">
+    <div class="grid4">
+      <div class="card"><small class="muted">👨‍🎓 Students</small><h2>{{ store.db.students.length }}</h2></div>
+      <div class="card"><small class="muted">👩‍🏫 Staff</small><h2>{{ store.db.staff.length }}</h2></div>
+      <div class="card"><small class="muted">💰 Fees Collected</small><h2>{{ store.rs(store.feesCollected()) }}</h2></div>
+      <div class="card"><small class="muted">🧾 Expenses</small><h2>{{ store.rs(store.totalExpense()) }}</h2></div>
+      <div class="card"><small class="muted">⏳ Pending Fees</small><h2>{{ store.rs(store.feesPending()) }}</h2></div>
+      <div class="card"><small class="muted">📊 Balance</small><h2>{{ store.rs(store.feesCollected() - store.totalExpense()) }}</h2></div>
+      <div class="card"><small class="muted">📝 Enquiries</small><h2>{{ store.db.enquiries.length }}</h2></div>
+      <div class="card"><small class="muted">📢 Notices</small><h2>{{ store.db.notices.length }}</h2></div>
+    </div>
+    <div class="two">
+      <div class="card"><h3>Recent Fees</h3><p *ngFor="let f of store.db.fees.slice(-4).reverse()">✅ {{ f.student }} — {{ store.rs(f.amt) }} <small class="muted">{{ f.month }}</small></p></div>
+      <div class="card"><h3>Recent Expenses</h3><p *ngFor="let e of store.db.expenses.slice(-4).reverse()">🧾 {{ e.title }} — {{ store.rs(e.amt) }}</p></div>
+    </div>
+  </section>
+
+  <section *ngIf="page==='students'">
+    <div class="card"><h3>Add / Edit Student</h3>
+      <div class="frow">
+        <input [(ngModel)]="sForm.name" placeholder="Name *" />
+        <select [(ngModel)]="sForm.cls"><option *ngFor="let c of classes">{{ c }}</option></select>
+        <input [(ngModel)]="sForm.roll" placeholder="Roll No" />
+        <select [(ngModel)]="sForm.gender"><option>Boy</option><option>Girl</option><option>Other</option></select>
+        <input [(ngModel)]="sForm.phone" placeholder="Parent Mobile" maxlength="10" />
+        <input [(ngModel)]="sForm.addr" placeholder="Address" />
+        <button class="btn primary" (click)="saveStudent()">Save</button>
+        <button class="btn ghost" *ngIf="editS>=0" (click)="cancelStudent()">Cancel</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="row between"><h3>Students ({{ store.db.students.length }})</h3>
+        <div class="row"><input [(ngModel)]="sSearch" placeholder="🔍 Search..." /><button class="btn ghost" (click)="csv()">⬇ CSV</button></div>
+      </div>
+      <div class="table-wrap"><table><thead><tr><th>Name</th><th>Class</th><th>Roll</th><th>Phone</th><th>Action</th></tr></thead>
+      <tbody><tr *ngFor="let s of filteredStudents(); let i = index"><td>{{ s.name }}</td><td>{{ s.cls }}</td><td>{{ s.roll }}</td><td>{{ s.phone }}</td>
+      <td><button (click)="editStudent(store.db.students.indexOf(s))">✏</button> <button (click)="delStudent(store.db.students.indexOf(s))">🗑</button></td></tr></tbody></table></div>
+    </div>
+  </section>
+
+  <section *ngIf="page==='staff'">
+    <div class="card"><h3>Add / Edit Staff</h3>
+      <div class="frow">
+        <input [(ngModel)]="tForm.name" placeholder="Name *" />
+        <input [(ngModel)]="tForm.role" placeholder="Role" />
+        <input [(ngModel)]="tForm.sub" placeholder="Subject" />
+        <input [(ngModel)]="tForm.phone" placeholder="Mobile" maxlength="10" />
+        <input [(ngModel)]="tForm.sal" type="number" placeholder="Salary ₹" />
+        <button class="btn primary" (click)="saveStaff()">Save</button>
+        <button class="btn ghost" *ngIf="editT>=0" (click)="cancelStaff()">Cancel</button>
+      </div>
+    </div>
+    <div class="card"><h3>Staff ({{ store.db.staff.length }})</h3>
+      <div class="table-wrap"><table><thead><tr><th>Name</th><th>Role</th><th>Subject</th><th>Salary</th><th>Action</th></tr></thead>
+      <tbody><tr *ngFor="let s of store.db.staff; let i = index"><td>{{ s.name }}</td><td>{{ s.role }}</td><td>{{ s.sub }}</td><td>{{ store.rs(s.sal) }}</td>
+      <td><button (click)="editStaff(i)">✏</button> <button (click)="delStaff(i)">🗑</button></td></tr></tbody></table></div>
+    </div>
+  </section>
+
+  <section *ngIf="page==='attendance'">
+    <div class="card">
+      <div class="row between"><h3>Attendance — <input type="date" [(ngModel)]="aDate" (change)="loadAttend()" /></h3>
+        <div class="row"><button class="btn ghost" (click)="allPresent()">All Present</button><button class="btn primary" (click)="saveAttend()">💾 Save Day</button></div>
+      </div>
+      <p class="muted">Present / Absent / Leave tick karein, phir Save Day dabayein.</p>
+      <div class="a-row" *ngFor="let s of store.db.students; let i = index">
+        <span>{{ s.name }} <small class="muted">{{ s.cls }} • Roll {{ s.roll }}</small></span>
+        <span class="seg">
+          <button [class.on-P]="(attend[i]||'P')==='P'" (click)="setAtt(i,'P')">P</button>
+          <button [class.on-A]="attend[i]==='A'" (click)="setAtt(i,'A')">A</button>
+          <button [class.on-L]="attend[i]==='L'" (click)="setAtt(i,'L')">L</button>
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <section *ngIf="page==='fees'">
+    <div class="card"><h3>Collect Fee</h3>
+      <div class="frow">
+        <select [(ngModel)]="fForm.student"><option *ngFor="let s of store.db.students">{{ s.name }}</option></select>
+        <input [(ngModel)]="fForm.amt" type="number" placeholder="Amount ₹ *" />
+        <input [(ngModel)]="fForm.month" placeholder="Month" />
+        <select [(ngModel)]="fForm.status"><option value="paid">Paid</option><option value="pending">Pending</option></select>
+        <button class="btn primary" (click)="saveFee()">Save</button>
+      </div>
+    </div>
+    <div class="card"><h3>Collected: {{ store.rs(store.feesCollected()) }} • Pending: {{ store.rs(store.feesPending()) }}</h3>
+      <div class="table-wrap"><table><thead><tr><th>Date</th><th>Student</th><th>Amount</th><th>Status</th><th>Action</th></tr></thead>
+      <tbody><tr *ngFor="let f of store.db.fees.slice().reverse()"><td>{{ f.date }}</td><td>{{ f.student }}<br /><small class="muted">{{ f.month }}</small></td><td>{{ store.rs(f.amt) }}</td><td>{{ f.status }}</td>
+      <td><button (click)="delFee(store.db.fees.indexOf(f))">🗑</button></td></tr></tbody></table></div>
+    </div>
+  </section>
+
+  <section *ngIf="page==='expenses'">
+    <div class="card"><h3>Add Expense</h3>
+      <div class="frow">
+        <input [(ngModel)]="eForm.title" placeholder="Title *" />
+        <input [(ngModel)]="eForm.cat" placeholder="Category" />
+        <input [(ngModel)]="eForm.amt" type="number" placeholder="Amount ₹ *" />
+        <input [(ngModel)]="eForm.date" type="date" />
+        <button class="btn primary" (click)="saveExp()">Save</button>
+      </div>
+    </div>
+    <div class="card"><h3>Total: {{ store.rs(store.totalExpense()) }}</h3>
+      <div class="table-wrap"><table><thead><tr><th>Date</th><th>Title</th><th>Amount</th><th>Action</th></tr></thead>
+      <tbody><tr *ngFor="let e of store.db.expenses.slice().reverse()"><td>{{ e.date }}</td><td>{{ e.title }}<br /><small class="muted">{{ e.cat }}</small></td><td>{{ store.rs(e.amt) }}</td>
+      <td><button (click)="delExp(store.db.expenses.indexOf(e))">🗑</button></td></tr></tbody></table></div>
+    </div>
+  </section>
+
+  <section *ngIf="page==='noticesM'">
+    <div class="card"><h3>Publish Notice</h3>
+      <div class="frow"><input [(ngModel)]="nText" placeholder="📢 Notice likhein..." style="flex:1" /><button class="btn primary" (click)="publishNotice()">Publish</button></div>
+    </div>
+    <div class="card"><h3>All Notices</h3>
+      <ul class="notices"><li *ngFor="let n of store.db.notices; let i = index"><span>{{ n.t }}</span><span><small class="muted">{{ n.d }}</small> <button (click)="delNotice(i)">🗑</button></span></li></ul>
+    </div>
+  </section>
+
+  <section *ngIf="page==='enquiries'">
+    <div class="card"><h3>Admission Enquiries</h3>
+      <div class="table-wrap"><table><thead><tr><th>Date</th><th>Name</th><th>Phone</th><th>Class</th><th>Status</th><th>Action</th></tr></thead>
+      <tbody><tr *ngFor="let q of store.db.enquiries.slice().reverse()"><td>{{ q.d }}</td><td>{{ q.name }}</td><td>{{ q.phone }}</td><td>{{ q.cls }}</td>
+      <td><select [ngModel]="q.status" (ngModelChange)="setQ(store.db.enquiries.indexOf(q), $event)"><option>new</option><option>contacted</option><option>admitted</option></select></td>
+      <td><button (click)="delQ(store.db.enquiries.indexOf(q))">🗑</button></td></tr></tbody></table></div>
+    </div>
+  </section>
+
+  <section *ngIf="page==='media'">
+    <div class="card"><h3>📸 Gallery me Photo Upload</h3>
+      <div class="frow">
+        <input [(ngModel)]="photoForm.title" placeholder="Title *" />
+        <input [(ngModel)]="photoForm.desc" placeholder="Short line" />
+        <input [(ngModel)]="photoForm.info" placeholder="Detail info" />
+        <input type="file" accept="image/*" (change)="onPhotoFile($event)" />
+        <button class="btn primary" (click)="savePhoto()">➕ Add Photo</button>
+      </div>
+      <p class="muted">Phone se photo chuno — auto-compress hokar gallery me jud jayegi.</p>
+      <div class="table-wrap"><table><thead><tr><th>Photo</th><th>Title</th><th>Action</th></tr></thead>
+      <tbody><tr *ngFor="let p of store.db.customGallery; let i = index"><td><img [src]="p.img" alt="" style="width:80px;height:50px;object-fit:cover;border-radius:8px" /></td><td>{{ p.t }}</td><td><button (click)="delPhoto(i)">🗑</button></td></tr></tbody></table></div>
+    </div>
+    <div class="card"><h3>🎬 Video Section me Video Add</h3>
+      <div class="frow">
+        <select [(ngModel)]="videoForm.cls"><option *ngFor="let c of classes">{{ c }}</option></select>
+        <input [(ngModel)]="videoForm.title" placeholder="Video title *" />
+        <input [(ngModel)]="videoForm.subject" placeholder="Subject" />
+        <input type="file" accept="video/*" (change)="onVideoFile($event)" />
+        <input [(ngModel)]="videoForm.link" placeholder="YouTube link (file na ho to)" style="flex:2" />
+        <button class="btn primary" (click)="saveVideo()">➕ Add Video</button>
+      </div>
+      <p class="muted">📱 Mobile se video file chuno (bina YouTube, isi device me chalegi) YA YouTube link dalo (sab devices me chalegi).</p>
+      <div class="table-wrap"><table><thead><tr><th>Class</th><th>Title</th><th>Action</th></tr></thead>
+      <tbody><tr *ngFor="let v of store.db.customVideos; let i = index"><td>{{ v.cls }}</td><td>{{ v.title }}</td><td><button (click)="delVideo(i)">🗑</button></td></tr></tbody></table></div>
+    </div>
+    <div class="card"><h3>🏠 Home Page Video Badlo</h3>
+      <div class="frow">
+        <select [(ngModel)]="hvMode"><option value="default">Default demo video</option><option value="youtube">YouTube link</option><option value="file">Mobile se upload</option></select>
+        <input [(ngModel)]="hvUrl" *ngIf="hvMode==='youtube'" placeholder="YouTube watch link" style="flex:2" />
+        <input type="file" accept="video/*" *ngIf="hvMode==='file'" (change)="onHvFile($event)" />
+        <button class="btn primary" (click)="saveHomeVideo()">✅ Set Video</button>
+      </div>
+      <p class="muted">Home page ka Campus video yahin se change hota hai.</p>
+    </div>
+  </section>
+
+  <section *ngIf="page==='settings'">
+    <div class="card form" style="margin:18px auto">
+      <h3>🔑 Login ID-Password Badlo</h3>
+      <p class="muted">Instagram settings jaisa — purana password dalo, naya ID-password set karo.</p>
+      <label>Login ID<input [(ngModel)]="setUser" placeholder="Login ID" /></label>
+      <label>Purana Password<input [(ngModel)]="setPass" type="password" placeholder="Purana password" /></label>
+      <label>Naya Password<input [(ngModel)]="setNewPass" type="password" placeholder="Naya password (min 4)" /></label>
+      <button class="btn primary" (click)="saveCreds()">✅ Update Login</button>
+      <p class="ok" *ngIf="credMsg.startsWith('✅')">{{ credMsg }}</p>
+      <p class="err" *ngIf="credMsg.startsWith('❌')">{{ credMsg }}</p>
+    </div>
+  </section>
+
+  <section *ngIf="page==='backup'">
+    <div class="two">
+      <div class="card"><h3>🔒 Encrypted Backup</h3>
+        <div class="row"><button class="btn primary" (click)="exportJson()">⬇ Export JSON</button><button class="btn ghost" (click)="enc()">🔒 Encrypted Text</button></div>
+        <textarea id="importBox" rows="6" [(ngModel)]="backupText" placeholder="Encrypted backup yahan..."></textarea>
+        <div class="row"><button class="btn primary" (click)="imp()">⬆ Import</button><button class="btn danger" (click)="wipe()">🗑 Clear</button></div>
+      </div>
+      <div class="card"><h3>ℹ Info</h3><p>Version: <b>v1.0.0 Angular</b><br />Storage: <b>Offline-first (localStorage)</b></p></div>
+    </div>
+  </section>
+</div>

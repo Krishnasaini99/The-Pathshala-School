@@ -1,0 +1,42 @@
+<main>
+  <!-- LIST -->
+  <section class="section" *ngIf="!detail">
+    <div class="wrap">
+      <h2>📚 Our Courses</h2>
+      <p class="center muted">Har age group ke liye complete course — curriculum, teacher aur timing ke saath. Details ke liye course kholo.</p>
+      <div class="grid3">
+        <div class="card prog" *ngFor="let c of courses">
+          <img class="prog-img" loading="lazy" [alt]="c.title" [src]="c.img" />
+          <h3>{{ c.title }}</h3>
+          <p class="muted">{{ c.mode }} • {{ c.duration }} • {{ c.teacher }}</p>
+          <p>{{ c.short }}</p>
+          <button class="btn primary" [routerLink]="['/courses', c.id]">See Details →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DETAIL -->
+  <section class="section" *ngIf="detail">
+    <div class="wrap">
+      <button class="btn ghost" routerLink="/courses">← All Courses</button>
+      <div class="two" style="margin-top:14px">
+        <div><img [src]="detail.img" [alt]="detail.title" style="width:100%;border-radius:14px" /></div>
+        <div>
+          <h2 style="text-align:left">{{ detail.title }}</h2>
+          <p class="muted">{{ detail.mode }} • {{ detail.duration }} • {{ detail.level }}</p>
+          <p><b>Teacher:</b> {{ detail.teacher }}</p>
+          <p>{{ detail.short }}</p>
+          <h3>📖 Curriculum</h3>
+          <ul class="tick"><li *ngFor="let m of detail.modules">✅ {{ m }}</li></ul>
+          <h3>⭐ Highlights</h3>
+          <ul class="tick"><li *ngFor="let h of detail.highlights">✅ {{ h }}</li></ul>
+          <div class="row">
+            <button class="btn primary big btn-admit" routerLink="/" fragment="admission">Admission 2026-27</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <footer><div class="wrap foot"><b>The PathShala School</b> © 2026. All rights reserved. • Courses 📚</div></footer>
+</main>

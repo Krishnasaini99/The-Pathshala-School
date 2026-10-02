@@ -1,0 +1,35 @@
+<main>
+  <section class="section">
+    <div class="wrap">
+      <h2>📞 Contact Us</h2>
+      <p class="center muted">Admission, fees ya kisi bhi sawal ke liye — call karo ya form bharo, school office se call aayega.</p>
+      <div class="grid3">
+        <div class="card"><h3>📍 Address</h3><p>The PathShala School,<br />Main Road, Saragaon,<br />Raipur, Chhattisgarh 493225</p></div>
+        <div class="card"><h3>📞 Phone</h3><p>+91 88716 26560<br />Mon-Sat: 8 AM - 2 PM</p></div>
+        <div class="card"><h3>⏰ Timing</h3><p>School: 8 AM - 2 PM<br />Office: 9 AM - 4 PM</p></div>
+      </div>
+      <div class="social-row">
+        <a class="soc-wa" [href]="social.whatsapp" target="_blank" rel="noopener">💬 WhatsApp</a>
+        <a class="soc-ig" *ngIf="social.instagram" [href]="social.instagram" target="_blank" rel="noopener">📸 Instagram</a>
+        <a class="soc-fb" *ngIf="social.facebook" [href]="social.facebook" target="_blank" rel="noopener">👍 Facebook</a>
+      </div>
+    </div>
+  </section>
+  <section id="admission" class="section alt">
+    <div class="wrap">
+      <h2>Admission Enquiry 2026-27</h2>
+      <p class="center muted">Form bhariye — school office se call aayega.</p>
+      <form class="card form" (ngSubmit)="submitEq()">
+        <label>Student ka naam *<input [(ngModel)]="eq.name" name="name" required placeholder="e.g. Aarav Sharma" /></label>
+        <label>Mobile number *<input [(ngModel)]="eq.phone" name="phone" required maxlength="10" placeholder="10-digit mobile" /></label>
+        <label>Class select karein
+          <select [(ngModel)]="eq.cls" name="cls"><option *ngFor="let c of classes">{{ c }}</option></select>
+        </label>
+        <label>Message (optional)<input [(ngModel)]="eq.msg" name="msg" placeholder="Kuch poochna ho to likhein" /></label>
+        <button class="btn primary" type="submit">Submit Enquiry</button>
+        <p class="ok" *ngIf="eqOk">✅ Enquiry mil gayi! Jaldi call aayega.</p>
+      </form>
+    </div>
+  </section>
+  <footer><div class="wrap foot"><b>The PathShala School</b> © 2026. All rights reserved. • Contact 📞</div></footer>
+</main>

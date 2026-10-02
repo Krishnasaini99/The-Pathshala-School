@@ -1,0 +1,75 @@
+<header class="topbar">
+  <div class="wrap topbar-in">
+    <div class="brand" routerLink="/" style="cursor:pointer">
+      <div class="logo">PS</div>
+      <div>
+        <div class="brand-name">The PathShala School</div>
+        <div class="brand-sub">Padhai • Sanskar • Ujjwal Bhavishya</div>
+      </div>
+    </div>
+    <nav class="nav" [class.open]="menuOpen">
+      <a routerLink="/" routerLinkActive="on" [routerLinkActiveOptions]="{exact:true}" (click)="menuOpen = false">Home</a>
+      <a routerLink="/courses" routerLinkActive="on" (click)="menuOpen = false">Courses</a>
+      <a routerLink="/ebooks" routerLinkActive="on" (click)="menuOpen = false">E-Books</a>
+      <a routerLink="/videos" routerLinkActive="on" (click)="menuOpen = false">Videos</a>
+      <a routerLink="/teachers" routerLinkActive="on" (click)="menuOpen = false">Our Teachers</a>
+      <a routerLink="/gallery" routerLinkActive="on" (click)="menuOpen = false">Gallery</a>
+      <a routerLink="/about" routerLinkActive="on" (click)="menuOpen = false">About</a>
+      <a routerLink="/contact" routerLinkActive="on" (click)="menuOpen = false">Contact</a>
+    </nav>
+    <div class="top-actions">
+      <button class="btn ghost" (click)="toggleTheme()">{{ dark ? '☀️ Light' : '🌙 Dark' }}</button>
+      <button class="btn primary" (click)="goLogin()">🔐 School Login</button>
+      <button class="btn ghost only-mobile" (click)="menuOpen = !menuOpen">☰</button>
+    </div>
+  </div>
+</header>
+
+<router-outlet></router-outlet>
+
+<footer class="site-footer">
+  <div class="wrap foot-in">
+    <div class="brand" style="cursor:pointer" routerLink="/">
+      <div class="logo">PS</div>
+      <div>
+        <div class="brand-name">The PathShala School</div>
+        <div class="brand-sub">Padhai • Sanskar • Ujjwal Bhavishya</div>
+      </div>
+    </div>
+    <div class="foot-links">
+      <a routerLink="/courses">Courses</a>
+      <a routerLink="/ebooks">E-Books</a>
+      <a routerLink="/videos">Videos</a>
+      <a routerLink="/contact">Contact</a>
+    </div>
+    <div class="social-row">
+      <a class="soc-wa" [href]="social.whatsapp" target="_blank" rel="noopener" title="WhatsApp">💬<small>WhatsApp</small></a>
+      <a class="soc-ig" *ngIf="social.instagram" [href]="social.instagram" target="_blank" rel="noopener" title="Instagram">📸<small>Instagram</small></a>
+      <a class="soc-fb" *ngIf="social.facebook" [href]="social.facebook" target="_blank" rel="noopener" title="Facebook">👍<small>Facebook</small></a>
+    </div>
+  </div>
+  <div class="wrap foot">© 2026 The PathShala School, Saragaon Raipur. All rights reserved.</div>
+</footer>
+
+<nav class="tabbar" aria-label="Main navigation">
+  <a routerLink="/" routerLinkActive="on" [routerLinkActiveOptions]="{exact:true}"><span>🏠</span><small>Home</small></a>
+  <a routerLink="/courses" routerLinkActive="on"><span>📚</span><small>Courses</small></a>
+  <a routerLink="/ebooks" routerLinkActive="on"><span>📘</span><small>E-Books</small></a>
+  <a routerLink="/videos" routerLinkActive="on"><span>🎬</span><small>Videos</small></a>
+  <a routerLink="/contact" routerLinkActive="on"><span>📞</span><small>Contact</small></a>
+  <button (click)="menuOpen = !menuOpen"><span>☰</span><small>More</small></button>
+</nav>
+
+<div class="modal" *ngIf="showLogin">
+  <div class="modal-box">
+    <h3>🔐 School Login</h3>
+    <p class="muted">Default login — <code>admin / pathshala123</code></p>
+    <label>Username<input [(ngModel)]="user" /></label>
+    <label>Password<input [(ngModel)]="pass" type="password" /></label>
+    <p class="err" *ngIf="err">❌ Galat username/password</p>
+    <div class="row">
+      <button class="btn primary" (click)="doLogin()">Login</button>
+      <button class="btn ghost" (click)="showLogin = false">Cancel</button>
+    </div>
+  </div>
+</div>

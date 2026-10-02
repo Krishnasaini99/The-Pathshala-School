@@ -1,0 +1,62 @@
+<main>
+  <section class="section">
+    <div class="wrap">
+      <h2>🎬 Video Library</h2>
+      <p class="center muted">Class chuno — uske learning videos dekho. Mobile se upload ki video yahin chalegi.</p>
+      <div class="tabs">
+        <button class="tab" *ngFor="let c of videoClasses" [class.active]="videoClass === c" (click)="videoClass = c">{{ c }}</button>
+      </div>
+      <div class="grid3">
+        <div class="card prog" *ngFor="let v of listOf(videoClass)">
+          <div class="vthumb">
+            <img class="prog-img" loading="lazy" [alt]="v.title" [src]="v.thumb" />
+            <span class="play">▶</span>
+          </div>
+          <h3>{{ v.title }}</h3>
+          <p class="muted">{{ v.subject }} • {{ videoClass }}</p>
+          <button class="btn primary" *ngIf="isLocal(v) || isYoutube(v)" (click)="playItem = v">▶ Play Video</button>
+          <a class="btn primary" style="text-decoration:none" *ngIf="!isLocal(v) && !isYoutube(v)" [href]="watchUrl(v)" target="_blank" rel="noopener">▶ Watch on YouTube ↗</a>
+        </div>
+      </div>
+      <p class="center" style="margin-top:18px"><button class="btn ghost" routerLink="/">← Back to Website</button></p>
+    </div>
+  </section>
+
+  <section class="section alt" *ngIf="localOf(videoClass).length">
+    <div class="wrap">
+      <h2>📱 Meri Uploads ({{ videoClass }})</h2>
+      <p class="center muted">School ke mobile se upload ki hui videos — bina internet ke bhi chalengi.</p>
+      <div class="grid3">
+        <div class="card prog" *ngFor="let l of localOf(videoClass)">
+          <div class="vthumb">
+            <video class="prog-img" [src]="l.url" preload="metadata" muted playsinline></video>
+            <span class="play">▶</span>
+          </div>
+          <h3>{{ l.title }}</h3>
+          <p class="muted">{{ l.subject }} • 📱 Phone upload</p>
+          <button class="btn primary" (click)="playLocal = { title: l.title, url: l.url }">▶ Play Video</button>
+        </div>
+      </div>
+    </div>
+  </section>
+  <footer><div class="wrap foot"><b>The PathShala School</b> © 2026. All rights reserved. • Video Library 🎬</div></footer>
+</main>
+
+<div class="modal" *ngIf="playLocal">
+  <div class="modal-box reader">
+    <div class="row between"><h3>▶ {{ playLocal.title }}</h3><button class="btn ghost" (click)="playLocal = null">✖</button></div>
+    <video [src]="playLocal.url" controls autoplay playsinline style="width:100%;border-radius:12px;background:#000"></video>
+    <button class="btn primary" (click)="playLocal = null" style="margin-top:10px">Close</button>
+  </div>
+</div>
+
+<div class="modal" *ngIf="playItem">
+  <div class="modal-box reader">
+    <div class="row between"><h3>🎬 {{ playItem.title }}</h3><button class="btn ghost" (click)="playItem = null">✖</button></div>
+    <video *ngIf="isLocal(playItem)" controls autoplay playsinline style="width:100%;border-radius:12px;background:#000" [src]="playItem.url"></video>
+    <iframe *ngIf="!isLocal(playItem)" [src]="ytEmbed(playItem)" title="Video player" frameborder="0" allowfullscreen
+      style="width:100%;height:360px;border-radius:12px;background:#000"></iframe>
+    <p class="muted">{{ playItem.subject }} • Video site ke andar hi chal rahi hai</p>
+    <button class="btn primary" (click)="playItem = null">Close</button>
+  </div>
+</div>
