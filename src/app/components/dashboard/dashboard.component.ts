@@ -6,8 +6,9 @@ import { StoreService } from '../../services/store.service';
 import { AuthService } from '../../services/auth.service';
 import { MediaStore } from '../../services/media-store.service';
 import { CLASSES, Fee } from '../../models';
+import { CMSField } from '../../school-info';
 
-type Page = 'overview' | 'students' | 'staff' | 'attendance' | 'fees' | 'expenses' | 'noticesM' | 'enquiries' | 'backup' | 'media' | 'settings';
+type Page = 'overview' | 'students' | 'staff' | 'attendance' | 'fees' | 'expenses' | 'noticesM' | 'enquiries' | 'backup' | 'media' | 'settings' | 'cms';
 
 @Component({
   selector: 'app-dashboard',
@@ -41,6 +42,18 @@ export class DashboardComponent {
   photoData = '';
   videoForm = { cls: CLASSES[0], title: '', subject: '', link: '' };
   videoFile: File | null = null;
+  // CMS content editor
+  cmsSearch = '';
+  cmsGroup = '';
+  cmsGroups(): string[] { return [...new Set(this.store.db.cms.map((f) => f.group))]; }
+  cmsFiltered(): CMSField[] {
+    const q = this.cmsSearch.toLowerCase();
+    return this.store.db.cms.filter(
+      (f) => (!this.cmsGroup || f.group === this.cmsGroup) &&
+             (!q || f.label.toLowerCase().includes(q) || f.key.toLowerCase().includes(q) || f.value.toLowerCase().includes(q))
+    );
+  }
+  saveCms(f: CMSField) { this.store.cmsSet(f.key, f.value); alert('✅ Save ho gaya — website par dikhega'); }
   // home page video (Media se change)
   hvMode: 'default' | 'youtube' | 'file' = 'default';
   hvUrl = '';

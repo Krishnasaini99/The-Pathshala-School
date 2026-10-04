@@ -2,7 +2,7 @@
   <section class="section">
     <div class="wrap">
       <h2>🎬 Video Library</h2>
-      <p class="center muted">Class chuno — uske learning videos dekho. Mobile se upload ki video yahin chalegi.</p>
+      <p class="center muted">{{ store.cmsGet('videosTag', 'Class chuno — uske learning videos dekho. Mobile se upload ki video yahin chalegi.') }}</p>
       <div class="tabs">
         <button class="tab" *ngFor="let c of videoClasses" [class.active]="videoClass === c" (click)="videoClass = c">{{ c }}</button>
       </div>

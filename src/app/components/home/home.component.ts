@@ -36,6 +36,10 @@ export class HomeComponent implements OnInit {
     return m ? m[1] : null;
   }
 
+  heroPoints(): string[] {
+    return this.store.cmsGet('heroTag', '✅ CGBSE Pattern - English Medium\n✅ Smart Classes & Computer Lab\n✅ Offline-first School OS').split('\n');
+  }
+
   get attendToday(): string {
     const att = this.store.db.attendance[this.store.today()] || {};
     const p = Object.values(att).filter((v) => v === 'P').length;

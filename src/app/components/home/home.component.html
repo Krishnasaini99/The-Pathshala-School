@@ -3,15 +3,13 @@
     <div class="wrap hero-in">
       <div>
         <h1>Welcome to <span>The PathShala School</span></h1>
-        <p class="lead">Padhai, Sanskar aur Ujjwal Bhavishya — Nursery se Class 12 tak quality education, khel aur sanskritik vikas ke saath.</p>
+        <p class="lead">{{ store.cmsGet('heroTagline', 'Padhai, Sanskar aur Ujjwal Bhavishya — Nursery se Class 12 tak quality education, khel aur sanskritik vikas ke saath.') }}</p>
         <div class="hero-btns">
           <a routerLink="/contact" class="btn big btn-admit">Admission 2026-27</a>
           <a routerLink="/about" class="btn big btn-about">About School</a>
         </div>
         <div class="hero-points">
-          <span>✅ CGBSE Pattern - English Medium</span>
-          <span>✅ Smart Classes & Computer Lab</span>
-          <span>✅ Offline-first School OS</span>
+          <span *ngFor="let p of heroPoints()">{{ p }}</span>
         </div>
       </div>
       <div class="hero-card">
@@ -39,7 +37,7 @@
           [src]="localVideoUrl || defaultVideo"></video>
         <div class="video-overlay"><span>▶ Campus Video</span></div>
       </div>
-      <p class="center muted" *ngIf="!localVideoUrl && !ytEmbed">Apna school video ho to dashboard → Media se badlo.</p>
+      <p class="center muted" *ngIf="!localVideoUrl && !ytEmbed">{{ store.cmsGet('campusNote', 'Apna school video ho to dashboard → Media se badlo.') }}</p>
     </div>
   </section>
 

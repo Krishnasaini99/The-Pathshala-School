@@ -2,7 +2,7 @@
   <section class="section">
     <div class="wrap">
       <h2>👩‍🏫 Our Teachers</h2>
-      <p class="center muted">Full-time faculty, anubhavi aur caring — same teacher day one se final exam tak.</p>
+      <p class="center muted">{{ store.cmsGet('teachersTag', 'Full-time faculty, anubhavi aur caring — same teacher day one se final exam tak.') }}</p>
       <div class="grid3">
         <div class="card prog" *ngFor="let s of store.db.staff; let i = index">
           <img class="prog-img" loading="lazy" [alt]="s.name" [src]="tPhoto(i)" />

@@ -16,6 +16,7 @@
   <button class="dtab" [class.active]="page==='noticesM'" (click)="page='noticesM'">Notices</button>
   <button class="dtab" [class.active]="page==='enquiries'" (click)="page='enquiries'">Enquiries <span class="badge">{{ newEqCount }}</span></button>
   <button class="dtab" [class.active]="page==='media'" (click)="page='media'">📸 Media</button>
+  <button class="dtab" [class.active]="page==='cms'" (click)="page='cms'">✏️ Content</button>
   <button class="dtab" [class.active]="page==='settings'" (click)="page='settings'">🔑 Account</button>
   <button class="dtab" [class.active]="page==='backup'" (click)="page='backup'">Backup</button>
 </div>
@@ -183,6 +184,26 @@
         <button class="btn primary" (click)="saveHomeVideo()">✅ Set Video</button>
       </div>
       <p class="muted">Home page ka Campus video yahin se change hota hai.</p>
+    </div>
+  </section>
+
+  <section *ngIf="page==='cms'">
+    <div class="card"><h3>✏️ Website Content Edit (sirf admin)</h3>
+      <p class="muted">Yahin se kisi bhi page ka text badlo — Save dabao, website par turant dikhega.</p>
+      <div class="frow" style="margin-bottom:14px">
+        <input [(ngModel)]="cmsSearch" placeholder="🔍 Search text, page, heading..." style="flex:3" />
+        <select [(ngModel)]="cmsGroup"><option value="">All sections</option><option *ngFor="let g of cmsGroups()">{{ g }}</option></select>
+      </div>
+      <div class="card" *ngFor="let f of cmsFiltered()" style="margin:10px 0">
+        <label style="display:grid;gap:6px;font-weight:700">{{ f.group }} — {{ f.label }}
+          <textarea *ngIf="f.type==='textarea'" [(ngModel)]="f.value" rows="3"></textarea>
+          <input *ngIf="f.type==='text'" [(ngModel)]="f.value" />
+        </label>
+        <div class="row" style="justify-content:space-between;margin-top:8px">
+          <small class="muted">Key: {{ f.key }}</small>
+          <button class="btn primary" (click)="saveCms(f)">💾 Save</button>
+        </div>
+      </div>
     </div>
   </section>
 

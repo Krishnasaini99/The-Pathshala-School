@@ -2,6 +2,7 @@
   <section class="section">
     <div class="wrap">
       <h2>Notice Board & Gallery</h2>
+      <p class="center muted">{{ store.cmsGet('galleryTag', 'School ki activities ki photos aur latest notices.') }}</p>
       <div class="tabs">
         <button class="tab" [class.active]="tab === 'notices'" (click)="tab = 'notices'">Notices</button>
         <button class="tab" [class.active]="tab === 'gallery'" (click)="tab = 'gallery'">Gallery</button>

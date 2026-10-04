@@ -1,20 +1,14 @@
 <main>
   <section class="section">
     <div class="wrap">
-      <h2>About Our School</h2>
+      <h2>{{ store.cmsGet('aboutTitle', 'About Our School') }}</h2>
       <p class="center muted">10+ saalon se shiksha ke kshetra me — {{ 500 + store.db.students.length }}+ students, {{ 17 + store.db.staff.length }}+ expert teachers.</p>
       <div class="two">
         <div class="card">
           <h3>Hamara Mission</h3>
-          <p>Har bachche ko achhi padhai, achhe sanskar aur confidence dena hi The PathShala School ka lakshya hai.</p>
+          <p>{{ store.cmsGet('aboutMission', 'Har bachche ko achhi padhai, achhe sanskar aur confidence dena hi The PathShala School ka lakshya hai.') }}</p>
           <ul class="tick">
-            <li>✅ CGBSE Pattern - English Medium</li>
-            <li>✅ Smart Classes & Computer Lab</li>
-            <li>✅ Sports, Music, Art & Dance</li>
-            <li>✅ School Bus Facility</li>
-            <li>✅ Scholarship for Meritorious Students</li>
-            <li>✅ Student, Staff, Fees, Attendance & Expense Management (School OS)</li>
-            <li>✅ Encrypted Backup & Bright/Dark Theme</li>
+            <li *ngFor="let item of aboutList()">{{ item }}</li>
           </ul>
         </div>
         <div class="card img-card">

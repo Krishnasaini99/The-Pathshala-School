@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { DB } from '../models';
+import { CMS_DEFAULTS } from '../school-info';
 
 const KEY = 'pathshala_db_v1';
 const today = () => new Date().toISOString().slice(0, 10);
@@ -28,6 +29,7 @@ function seed(): DB {
     customGallery: [],
     customVideos: [],
     homeVideo: { mode: 'default', url: '' },
+    cms: CMS_DEFAULTS.map((f) => ({ ...f })),
   };
 }
 
@@ -42,7 +44,17 @@ export class StoreService {
     if (!this.db.customGallery) this.db.customGallery = [];
     if (!this.db.customVideos) this.db.customVideos = [];
     if (!this.db.homeVideo) this.db.homeVideo = { mode: 'default', url: '' };
+    if (!this.db.cms || !this.db.cms.length) this.db.cms = CMS_DEFAULTS.map((f) => ({ ...f }));
   }
+  cmsGet(key: string, fallback: string): string {
+    const f = this.db.cms?.find((c) => c.key === key);
+    return f && f.value.trim() ? f.value : fallback;
+  }
+  cmsSet(key: string, value: string) {
+    const f = this.db.cms?.find((c) => c.key === key);
+    if (f) { f.value = value; this.save(); }
+  }
+
   private load(): DB {
     try {
       const raw = localStorage.getItem(KEY);

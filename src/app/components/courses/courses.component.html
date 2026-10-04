@@ -3,7 +3,7 @@
   <section class="section" *ngIf="!detail">
     <div class="wrap">
       <h2>📚 Our Courses</h2>
-      <p class="center muted">Har age group ke liye complete course — curriculum, teacher aur timing ke saath. Details ke liye course kholo.</p>
+      <p class="center muted">{{ store.cmsGet('coursesTag', 'Har age group ke liye complete course — curriculum, teacher aur timing ke saath. Details ke liye course kholo.') }}</p>
       <div class="grid3">
         <div class="card prog" *ngFor="let c of courses">
           <img class="prog-img" loading="lazy" [alt]="c.title" [src]="c.img" />

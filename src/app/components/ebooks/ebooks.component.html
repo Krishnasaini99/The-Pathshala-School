@@ -2,7 +2,7 @@
   <section class="section">
     <div class="wrap">
       <h2>📚 E-Books Library</h2>
-      <p class="center muted">Class chuno — uski saari books khul jayengi. Kisi book par click karke padho ya PDF download karo.</p>
+      <p class="center muted">{{ store.cmsGet('ebooksTag', 'Class chuno — uski saari books khul jayengi. Kisi book par click karke padho ya PDF download karo.') }}</p>
       <div class="tabs">
         <button class="tab" *ngFor="let c of ebookClasses" [class.active]="ebookClass === c" (click)="ebookClass = c">{{ c }}</button>
       </div>

@@ -11,4 +11,8 @@ import { StoreService } from '../../services/store.service';
 })
 export class AboutComponent {
   constructor(public store: StoreService) {}
+
+  aboutList(): string[] {
+    return this.store.cmsGet('aboutList', '✅ CGBSE Pattern - English Medium\n✅ Smart Classes & Computer Lab\n✅ Sports, Music, Art & Dance\n✅ School Bus Facility\n✅ Scholarship for Meritorious Students').split('\n');
+  }
 }

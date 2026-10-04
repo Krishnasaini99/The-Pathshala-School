@@ -2,11 +2,11 @@
   <section class="section">
     <div class="wrap">
       <h2>📞 Contact Us</h2>
-      <p class="center muted">Admission, fees ya kisi bhi sawal ke liye — call karo ya form bharo, school office se call aayega.</p>
+      <p class="center muted">{{ contactTag }}</p>
       <div class="grid3">
-        <div class="card"><h3>📍 Address</h3><p>The PathShala School,<br />Main Road, Saragaon,<br />Raipur, Chhattisgarh 493225</p></div>
-        <div class="card"><h3>📞 Phone</h3><p>+91 88716 26560<br />Mon-Sat: 8 AM - 2 PM</p></div>
-        <div class="card"><h3>⏰ Timing</h3><p>School: 8 AM - 2 PM<br />Office: 9 AM - 4 PM</p></div>
+        <div class="card"><h3>📍 Address</h3><p style="white-space:pre-line">{{ addressText }}</p></div>
+        <div class="card"><h3>📞 Phone</h3><p style="white-space:pre-line">{{ phoneText }}</p></div>
+        <div class="card"><h3>⏰ Timing</h3><p style="white-space:pre-line">{{ timingText }}</p></div>
       </div>
       <div class="social-row">
         <a class="soc-wa" [href]="social.whatsapp" target="_blank" rel="noopener">💬 WhatsApp</a>

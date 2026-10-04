@@ -20,6 +20,8 @@
     <div class="top-actions">
       <button class="btn ghost" (click)="toggleTheme()">{{ dark ? '☀️ Light' : '🌙 Dark' }}</button>
       <button class="btn primary" (click)="goLogin()">🔐 School Login</button>
+      <a class="btn primary" *ngIf="auth.loggedIn" routerLink="/dashboard" style="text-decoration:none">✏️ Edit Content</a>
+      <button class="btn danger" *ngIf="auth.loggedIn" (click)="logout()">🚪 Logout</button>
       <button class="btn ghost only-mobile" (click)="menuOpen = !menuOpen">☰</button>
     </div>
   </div>
