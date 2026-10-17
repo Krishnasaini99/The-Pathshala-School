@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { VIDEOS, VIDEO_CLASSES, VideoItem, ytSearch, thumbFor } from '../../videos';
+import { VIDEO_CLASSES, VideoItem, ytSearch, thumbFor } from '../../videos';
 import { StoreService } from '../../services/store.service';
 import { MediaStore } from '../../services/media-store.service';
 
@@ -35,7 +35,7 @@ export class VideosComponent implements OnInit {
   }
 
   listOf(cls: string): VideoItem[] {
-    const base = VIDEOS[cls] || [];
+    const base = (this.store.db.videos?.[cls] || []).map((v) => ({ ...v, thumb: v.thumb || thumbFor(cls) }));
     const custom = this.store.db.customVideos.filter((v) => v.cls === cls).map((v) => this.toItem(cls, v));
     return [...custom, ...base];
   }

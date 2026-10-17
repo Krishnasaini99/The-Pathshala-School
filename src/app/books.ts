@@ -1,5 +1,5 @@
 export interface EChapter { t: string; body: string[]; }
-export interface EBook { title: string; subject: string; pages: number; chapters: EChapter[]; file?: string; }
+export interface EBook { title: string; subject: string; pages: number; chapters: EChapter[]; file?: string; img?: string; }
 
 export const EBOOK_CLASSES = ['Nursery-UKG', 'Class 1-5', 'Class 6-8', 'Class 9-10', 'Class 11-12'];
 

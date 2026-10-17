@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { EBOOKS, EBOOK_CLASSES, EBook } from '../../books';
+import { EBOOK_CLASSES, EBook } from '../../books';
 import { StoreService } from '../../services/store.service';
 
 @Component({
@@ -17,7 +17,7 @@ export class EbooksComponent {
 
   constructor(public store: StoreService) {}
 
-  booksOf(cls: string): EBook[] { return EBOOKS[cls] || []; }
+  booksOf(cls: string): EBook[] { return this.store.db.ebooks?.[cls] || []; }
 
   coverClass(sub: string) {
     const s = sub.toLowerCase();

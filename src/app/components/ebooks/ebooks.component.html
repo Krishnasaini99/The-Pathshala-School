@@ -8,12 +8,15 @@
       </div>
       <div class="grid3">
         <div class="card book" *ngFor="let b of booksOf(ebookClass)">
-          <div class="bcover" [ngClass]="coverClass(b.subject)">
+          <div class="bcover" [ngClass]="coverClass(b.subject)" *ngIf="!b.img; else imgCover">
             <div class="bclass">{{ ebookClass }}</div>
             <div class="btitle">{{ b.title }}</div>
             <div class="bsub">{{ b.subject }}</div>
             <div class="bpub">PathShala Prakashan • {{ b.pages }} pages</div>
           </div>
+          <ng-template #imgCover>
+            <img class="bcover" [src]="b.img" [alt]="b.title" style="object-fit:cover;padding:0" />
+          </ng-template>
           <h3>{{ b.title }}</h3>
           <p class="muted">{{ b.subject }} • {{ b.chapters.length }} chapters</p>
           <div class="row" style="justify-content:center">

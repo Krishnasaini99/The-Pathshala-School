@@ -5,10 +5,11 @@ import { RouterLink } from '@angular/router';
 import { StoreService } from '../../services/store.service';
 import { AuthService } from '../../services/auth.service';
 import { MediaStore } from '../../services/media-store.service';
-import { CLASSES, Fee } from '../../models';
+import { CLASSES, Fee, ExploreCard } from '../../models';
 import { CMSField } from '../../school-info';
+import { EBOOK_CLASSES, EBook } from '../../books';
 
-type Page = 'overview' | 'students' | 'staff' | 'attendance' | 'fees' | 'expenses' | 'noticesM' | 'enquiries' | 'backup' | 'media' | 'settings' | 'cms';
+type Page = 'overview' | 'students' | 'staff' | 'attendance' | 'fees' | 'expenses' | 'noticesM' | 'enquiries' | 'backup' | 'media' | 'settings' | 'cms' | 'cards';
 
 @Component({
   selector: 'app-dashboard',
@@ -54,6 +55,167 @@ export class DashboardComponent {
     );
   }
   saveCms(f: CMSField) { this.store.cmsSet(f.key, f.value); alert('✅ Save ho gaya — website par dikhega'); }
+
+  // ============ 🧩 CONTENT MANAGER (site ke cards edit) ============
+  cardsPage: 'explore' | 'courses' | 'ebooks' | 'videos' | 'teachers' | 'gallery' = 'explore';
+  msg = '';
+  private flash(m: string) { this.msg = m; setTimeout(() => { if (this.msg === m) this.msg = ''; }, 2500); }
+  ebookCls = EBOOK_CLASSES[0];
+  ebookClassList = EBOOK_CLASSES;
+  videoCls = CLASSES[0];
+  private readImage(ev: Event): Promise<string> {
+    return new Promise((res, rej) => {
+      const f = (ev.target as HTMLInputElement).files?.[0];
+      if (!f) return rej('no file');
+      const rd = new FileReader();
+      rd.onload = () => {
+        const img = new Image();
+        img.onload = () => {
+          const max = 900;
+          const sc = Math.min(1, max / Math.max(img.width, img.height));
+          const c = document.createElement('canvas');
+          c.width = Math.round(img.width * sc);
+          c.height = Math.round(img.height * sc);
+          c.getContext('2d')!.drawImage(img, 0, 0, c.width, c.height);
+          res(c.toDataURL('image/jpeg', 0.72));
+        };
+        img.onerror = () => rej('bad image');
+        img.src = rd.result as string;
+      };
+      rd.onerror = () => rej('read fail');
+      rd.readAsDataURL(f);
+    });
+  }
+
+  // ---- Home: Explore cards ----
+  editEx = -1;
+  exForm: ExploreCard = { icon: '📚', title: '', desc: '', link: '/courses', img: '' };
+  editExplore(i: number) { this.editEx = i; this.exForm = { ...this.store.db.explore[i] }; }
+  newExplore() { this.editEx = -1; this.exForm = { icon: '✨', title: '', desc: '', link: '/courses', img: '' }; }
+  saveExplore() {
+    if (!this.exForm.title.trim()) { this.flash('❌ Title zaroori hai'); return; }
+    const o: ExploreCard = { ...this.exForm, title: this.exForm.title.trim(), desc: this.exForm.desc.trim() };
+    if (this.editEx >= 0) this.store.db.explore[this.editEx] = o;
+    else this.store.db.explore.push(o);
+    this.store.save(); this.newExplore(); this.flash('✅ Explore card save ho gaya');
+  }
+  delExplore(i: number) { if (confirm('Card delete?')) { this.store.db.explore.splice(i, 1); this.store.save(); } }
+  async exImg(ev: Event) { try { this.exForm.img = await this.readImage(ev); } catch { this.flash('❌ Image read nahi hui'); } }
+
+  // ---- Courses cards ----
+  editCo = -1;
+  coForm: any = { id: '', title: '', short: '', mode: 'Offline', duration: '', teacher: '', level: '', modules: '', highlights: '', img: '' };
+  editCourse(i: number) {
+    this.editCo = i;
+    const c = this.store.db.courses[i];
+    this.coForm = { ...c, modules: c.modules.join('\n'), highlights: c.highlights.join('\n') };
+  }
+  newCourse() {
+    this.editCo = -1;
+    this.coForm = { id: '', title: '', short: '', mode: 'Offline', duration: '1 Year', teacher: '', level: '', modules: '', highlights: '', img: '' };
+  }
+  saveCourse() {
+    if (!this.coForm.title.trim()) { this.flash('❌ Title zaroori hai'); return; }
+    const id = this.coForm.id.trim() || this.coForm.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'course-' + Date.now();
+    const o = {
+      ...this.coForm, id,
+      title: this.coForm.title.trim(), short: this.coForm.short.trim(),
+      modules: this.coForm.modules.split('\n').map((s: string) => s.trim()).filter(Boolean),
+      highlights: this.coForm.highlights.split('\n').map((s: string) => s.trim()).filter(Boolean),
+    };
+    if (this.editCo >= 0) this.store.db.courses[this.editCo] = o;
+    else this.store.db.courses.push(o);
+    this.store.save(); this.newCourse(); this.flash('✅ Course card save ho gaya');
+  }
+  delCourse(i: number) { if (confirm('Course delete?')) { this.store.db.courses.splice(i, 1); this.store.save(); } }
+  async coImg(ev: Event) { try { this.coForm.img = await this.readImage(ev); } catch { this.flash('❌ Image read nahi hui'); } }
+
+  // ---- E-Books ----
+  editEb: { cls: string; i: number } | null = null;
+  ebForm: any = { title: '', subject: '', pages: 20, file: '', chapters: [] };
+  booksOf(cls: string): EBook[] { return this.store.db.ebooks?.[cls] || []; }
+  editBook(cls: string, i: number) {
+    this.editEb = { cls, i };
+    const b = this.store.db.ebooks[cls][i];
+    this.ebForm = {
+      title: b.title, subject: b.subject, pages: b.pages, file: b.file || '', img: b.img || '',
+      chapters: b.chapters.map((c) => ({ t: c.t, body: c.body.join('\n') })),
+    };
+  }
+  newBook() {
+    this.editEb = null;
+    this.ebForm = { title: '', subject: '', pages: 20, file: '', img: '', chapters: [{ t: 'Chapter 1', body: '' }] };
+  }
+  async ebImg(ev: Event) { try { this.ebForm.img = await this.readImage(ev); } catch { this.flash('❌ Image read nahi hui'); } }
+  addChapter() { this.ebForm.chapters.push({ t: 'Chapter ' + (this.ebForm.chapters.length + 1), body: '' }); }
+  delChapter(i: number) { this.ebForm.chapters.splice(i, 1); }
+  saveBook() {
+    if (!this.ebForm.title.trim()) { this.flash('❌ Book title zaroori hai'); return; }
+    const b: EBook = {
+      title: this.ebForm.title.trim(), subject: this.ebForm.subject.trim() || 'General',
+      pages: +this.ebForm.pages || 0, file: this.ebForm.file.trim() || undefined,
+      img: this.ebForm.img || undefined,
+      chapters: this.ebForm.chapters
+        .map((c: any) => ({ t: (c.t || 'Chapter').trim(), body: String(c.body ?? '').split('\n').map((x: string) => x.trim()) }))
+        .filter((c: any) => c.body.length),
+    };
+    if (!this.store.db.ebooks[this.ebookCls]) this.store.db.ebooks[this.ebookCls] = [];
+    if (this.editEb) this.store.db.ebooks[this.editEb.cls][this.editEb.i] = b;
+    else this.store.db.ebooks[this.ebookCls].push(b);
+    this.store.save(); this.newBook(); this.flash('✅ E-Book save ho gaya — ' + this.ebookCls);
+  }
+  delBook(cls: string, i: number) { if (confirm('Book delete?')) { this.store.db.ebooks[cls].splice(i, 1); this.store.save(); } }
+
+  // ---- Videos ----
+  editVi: { cls: string; i: number } | null = null;
+  viForm: any = { title: '', subject: '', url: '', thumb: '', query: '' };
+  editVideo(cls: string, i: number) {
+    this.editVi = { cls, i };
+    const v = this.store.db.videos[cls][i];
+    this.viForm = { title: v.title, subject: v.subject, url: v.url || '', thumb: v.thumb || '', query: v.query || '' };
+  }
+  newVideo() {
+    this.editVi = null;
+    this.viForm = { title: '', subject: '', url: '', thumb: '', query: '' };
+  }
+  saveVideoCard() {
+    if (!this.viForm.title.trim()) { this.flash('❌ Video title zaroori hai'); return; }
+    const v = {
+      title: this.viForm.title.trim(), subject: this.viForm.subject.trim() || 'General',
+      url: this.viForm.url.trim() || undefined, thumb: this.viForm.thumb, query: this.viForm.query.trim(),
+    };
+    if (!this.store.db.videos[this.videoCls]) this.store.db.videos[this.videoCls] = [];
+    if (this.editVi) this.store.db.videos[this.editVi.cls][this.editVi.i] = v as any;
+    else this.store.db.videos[this.videoCls].push(v as any);
+    this.store.save(); this.newVideo(); this.flash('✅ Video card save ho gaya — ' + this.videoCls);
+  }
+  delVideoItem(cls: string, i: number) { if (confirm('Video delete?')) { this.store.db.videos[cls].splice(i, 1); this.store.save(); } }
+  async viThumb(ev: Event) { try { this.viForm.thumb = await this.readImage(ev); } catch { this.flash('❌ Image read nahi hui'); } }
+
+  // ---- Teachers (Staff card photo + bio) ----
+  saveTeacherCard(i: number) { this.store.save(); this.flash('✅ Teacher card save ho gaya'); }
+  async tPhoto(ev: Event, i: number) {
+    try { this.store.db.staff[i].photo = await this.readImage(ev); this.store.save(); this.flash('✅ Photo update ho gayi'); }
+    catch { this.flash('❌ Image read nahi hui'); }
+  }
+  delTeacher(i: number) { if (confirm('Teacher delete?')) { this.store.db.staff.splice(i, 1); this.store.save(); } }
+  newTeacher() { this.store.db.staff.push({ name: 'Naya Teacher', role: 'Teacher', sub: '', phone: '', sal: 0, photo: '', bio: '' }); this.store.save(); }
+
+  // ---- Gallery (default gallery items) ----
+  editGa = -1;
+  gaForm: any = { t: '', d: '', info: '', img: '' };
+  editGal(i: number) { this.editGa = i; this.gaForm = { ...this.store.db.gallery[i] }; }
+  newGal() { this.editGa = -1; this.gaForm = { t: '', d: '', info: '', img: '' }; }
+  saveGal() {
+    if (!this.gaForm.t.trim()) { this.flash('❌ Title zaroori hai'); return; }
+    const o = { ...this.gaForm, t: this.gaForm.t.trim(), d: this.gaForm.d.trim(), info: this.gaForm.info.trim() || this.gaForm.t.trim() };
+    if (this.editGa >= 0) this.store.db.gallery[this.editGa] = o;
+    else this.store.db.gallery.push(o);
+    this.store.save(); this.newGal(); this.flash('✅ Gallery card save ho gaya');
+  }
+  delGal(i: number) { if (confirm('Photo delete?')) { this.store.db.gallery.splice(i, 1); this.store.save(); } }
+  async gaImg(ev: Event) { try { this.gaForm.img = await this.readImage(ev); } catch { this.flash('❌ Image read nahi hui'); } }
+
   // home page video (Media se change)
   hvMode: 'default' | 'youtube' | 'file' = 'default';
   hvUrl = '';

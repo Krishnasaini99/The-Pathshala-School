@@ -46,12 +46,11 @@
       <h2>Explore PathShala</h2>
       <p class="center muted">Har section ka apna page — tab par click karo, page khulega.</p>
       <div class="grid3">
-        <div class="card prog click" routerLink="/courses"><div class="emoji">📚</div><h3>Courses</h3><p>Pre-Primary se Secondary, Sports aur Arts tak →</p></div>
-        <div class="card prog click" routerLink="/ebooks"><div class="emoji">📘</div><h3>E-Books</h3><p>Class-wise books + free PDF downloads →</p></div>
-        <div class="card prog click" routerLink="/videos"><div class="emoji">🎬</div><h3>Videos</h3><p>Learning videos har class ke liye →</p></div>
-        <div class="card prog click" routerLink="/teachers"><div class="emoji">👩‍🏫</div><h3>Our Teachers</h3><p>Anubhavi aur caring faculty →</p></div>
-        <div class="card prog click" routerLink="/gallery"><div class="emoji">📸</div><h3>Gallery & Notices</h3><p>Photos aur notice board →</p></div>
-        <div class="card prog click" routerLink="/contact"><div class="emoji">📞</div><h3>Contact & Admission</h3><p>Form bhariye, call aayega →</p></div>
+        <div class="card prog click" *ngFor="let e of store.db.explore" [routerLink]="e.link">
+          <img class="prog-img" *ngIf="e.img" loading="lazy" [alt]="e.title" [src]="e.img" />
+          <div class="emoji" *ngIf="!e.img">{{ e.icon }}</div>
+          <h3>{{ e.title }}</h3><p>{{ e.desc }}</p>
+        </div>
       </div>
     </div>
   </section>

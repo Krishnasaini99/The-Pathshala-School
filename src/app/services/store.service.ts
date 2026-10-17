@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { DB } from '../models';
 import { CMS_DEFAULTS } from '../school-info';
+import { defaultCourses, defaultEbooks, defaultVideos, defaultGallery, defaultExplore, DEFAULT_TEACHER_PHOTOS, DEFAULT_TEACHER_BIOS } from '../defaults';
 
 const KEY = 'pathshala_db_v1';
 const today = () => new Date().toISOString().slice(0, 10);
@@ -30,6 +31,11 @@ function seed(): DB {
     customVideos: [],
     homeVideo: { mode: 'default', url: '' },
     cms: CMS_DEFAULTS.map((f) => ({ ...f })),
+    explore: defaultExplore(),
+    courses: defaultCourses(),
+    ebooks: defaultEbooks(),
+    videos: defaultVideos(),
+    gallery: defaultGallery(),
   };
 }
 
@@ -41,10 +47,25 @@ export class StoreService {
   rs(n: number | string) { return '₹' + Number(n || 0).toLocaleString('en-IN'); }
 
   private migrate() {
-    if (!this.db.customGallery) this.db.customGallery = [];
-    if (!this.db.customVideos) this.db.customVideos = [];
-    if (!this.db.homeVideo) this.db.homeVideo = { mode: 'default', url: '' };
-    if (!this.db.cms || !this.db.cms.length) this.db.cms = CMS_DEFAULTS.map((f) => ({ ...f }));
+    let changed = false;
+    const need = <T,>(v: T | undefined | null | '' | any[] | Record<string, any>): boolean =>
+      !v || (Array.isArray(v) && !v.length) || (typeof v === 'object' && !Array.isArray(v) && !Object.keys(v).length);
+    if (need(this.db.customGallery)) { this.db.customGallery = []; changed = true; }
+    if (need(this.db.customVideos)) { this.db.customVideos = []; changed = true; }
+    if (!this.db.homeVideo) { this.db.homeVideo = { mode: 'default', url: '' }; changed = true; }
+    if (!this.db.cms || !this.db.cms.length) { this.db.cms = CMS_DEFAULTS.map((f) => ({ ...f })); changed = true; }
+    // New: editable website cards — purane DB me ye fields nahi thi, default se bhar do
+    if (need(this.db.explore)) { this.db.explore = defaultExplore(); changed = true; }
+    if (need(this.db.courses)) { this.db.courses = defaultCourses(); changed = true; }
+    if (need(this.db.ebooks)) { this.db.ebooks = defaultEbooks(); changed = true; }
+    if (need(this.db.videos)) { this.db.videos = defaultVideos(); changed = true; }
+    if (need(this.db.gallery)) { this.db.gallery = defaultGallery(); changed = true; }
+    // Teacher cards: har staff ko photo + bio do (default se)
+    (this.db.staff || []).forEach((s, i) => {
+      if (!s.photo) { s.photo = DEFAULT_TEACHER_PHOTOS[i % DEFAULT_TEACHER_PHOTOS.length]; changed = true; }
+      if (!s.bio) { s.bio = DEFAULT_TEACHER_BIOS[i % DEFAULT_TEACHER_BIOS.length]; changed = true; }
+    });
+    if (changed) this.save();
   }
   cmsGet(key: string, fallback: string): string {
     const f = this.db.cms?.find((c) => c.key === key);

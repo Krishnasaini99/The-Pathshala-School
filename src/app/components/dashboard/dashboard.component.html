@@ -16,7 +16,8 @@
   <button class="dtab" [class.active]="page==='noticesM'" (click)="page='noticesM'">Notices</button>
   <button class="dtab" [class.active]="page==='enquiries'" (click)="page='enquiries'">Enquiries <span class="badge">{{ newEqCount }}</span></button>
   <button class="dtab" [class.active]="page==='media'" (click)="page='media'">📸 Media</button>
-  <button class="dtab" [class.active]="page==='cms'" (click)="page='cms'">✏️ Content</button>
+  <button class="dtab" [class.active]="page==='cards'" (click)="page='cards'">🧩 Content</button>
+  <button class="dtab" [class.active]="page==='cms'" (click)="page='cms'">✏️ Text</button>
   <button class="dtab" [class.active]="page==='settings'" (click)="page='settings'">🔑 Account</button>
   <button class="dtab" [class.active]="page==='backup'" (click)="page='backup'">Backup</button>
 </div>
@@ -184,6 +185,187 @@
         <button class="btn primary" (click)="saveHomeVideo()">✅ Set Video</button>
       </div>
       <p class="muted">Home page ka Campus video yahin se change hota hai.</p>
+    </div>
+  </section>
+
+  <section *ngIf="page==='cards'">
+    <div class="card">
+      <div class="row between" style="flex-wrap:wrap;gap:10px">
+        <div>
+          <h3>🧩 Content Manager — Website ke cards edit karo</h3>
+          <p class="muted">Har section ka card (image + details) yahin se badlo — Save dabao, website par turant dikhega.</p>
+        </div>
+        <p class="ok" *ngIf="msg" style="margin:0">{{ msg }}</p>
+      </div>
+      <div class="tabs" style="margin-top:12px">
+        <button class="tab" [class.active]="cardsPage==='explore'" (click)="cardsPage='explore'; newExplore()">🏠 Explore</button>
+        <button class="tab" [class.active]="cardsPage==='courses'" (click)="cardsPage='courses'; newCourse()">📚 Courses</button>
+        <button class="tab" [class.active]="cardsPage==='ebooks'" (click)="cardsPage='ebooks'; newBook()">📖 E-Books</button>
+        <button class="tab" [class.active]="cardsPage==='videos'" (click)="cardsPage='videos'; newVideo()">🎬 Videos</button>
+        <button class="tab" [class.active]="cardsPage==='teachers'" (click)="cardsPage='teachers'">👩‍🏫 Teachers</button>
+        <button class="tab" [class.active]="cardsPage==='gallery'" (click)="cardsPage='gallery'; newGal()">🖼 Gallery</button>
+      </div>
+    </div>
+
+    <!-- EXPLORE (Home) -->
+    <div class="card" *ngIf="cardsPage==='explore'">
+      <div class="row between"><h3>🏠 Home — Explore PathShala cards</h3><button class="btn primary" (click)="newExplore()">➕ New Card</button></div>
+      <div class="frow" style="margin-top:10px">
+        <input [(ngModel)]="exForm.icon" placeholder="Emoji icon" style="max-width:110px" />
+        <input [(ngModel)]="exForm.title" placeholder="Title *" />
+        <select [(ngModel)]="exForm.link">
+          <option value="/courses">Courses page</option><option value="/ebooks">E-Books page</option>
+          <option value="/videos">Videos page</option><option value="/teachers">Teachers page</option>
+          <option value="/gallery">Gallery page</option><option value="/contact">Contact page</option>
+          <option value="/about">About page</option><option value="/">Home</option>
+        </select>
+        <input type="file" accept="image/*" (change)="exImg($event)" />
+        <button class="btn primary" (click)="saveExplore()">💾 Save Card</button>
+        <button class="btn ghost" *ngIf="editEx>=0" (click)="newExplore()">Cancel</button>
+      </div>
+      <input [(ngModel)]="exForm.desc" placeholder="Card ki detail line (desc)" style="width:100%;margin-bottom:12px" />
+      <div class="table-wrap"><table><thead><tr><th>Image/Icon</th><th>Title</th><th>Detail</th><th>Link</th><th>Action</th></tr></thead>
+      <tbody><tr *ngFor="let e of store.db.explore; let i = index">
+        <td><img *ngIf="e.img" [src]="e.img" alt="" style="width:70px;height:46px;object-fit:cover;border-radius:8px" /><span *ngIf="!e.img" style="font-size:24px">{{ e.icon }}</span></td>
+        <td>{{ e.title }}</td><td>{{ e.desc }}</td><td><small class="muted">{{ e.link }}</small></td>
+        <td><button (click)="editExplore(i)">✏</button> <button (click)="delExplore(i)">🗑</button></td>
+      </tr></tbody></table></div>
+    </div>
+
+    <!-- COURSES -->
+    <div class="card" *ngIf="cardsPage==='courses'">
+      <div class="row between"><h3>📚 Courses — card image + details</h3><button class="btn primary" (click)="newCourse()">➕ New Course</button></div>
+      <div class="frow" style="margin-top:10px">
+        <input [(ngModel)]="coForm.title" placeholder="Course title *" />
+        <input [(ngModel)]="coForm.mode" placeholder="Mode (Offline)" />
+        <input [(ngModel)]="coForm.duration" placeholder="Duration (1 Year)" />
+        <input [(ngModel)]="coForm.teacher" placeholder="Teacher name" />
+        <input [(ngModel)]="coForm.level" placeholder="Level (Class 1-5)" />
+        <input type="file" accept="image/*" (change)="coImg($event)" />
+        <button class="btn primary" (click)="saveCourse()">💾 Save</button>
+        <button class="btn ghost" *ngIf="editCo>=0" (click)="newCourse()">Cancel</button>
+      </div>
+      <label style="display:grid;gap:4px;margin-bottom:8px">Short detail (card par dikhta hai)
+        <textarea [(ngModel)]="coForm.short" rows="2"></textarea></label>
+      <div class="frow" style="align-items:flex-start">
+        <label style="display:grid;gap:4px;flex:1">Curriculum (ek line me ek item)
+          <textarea [(ngModel)]="coForm.modules" rows="4" placeholder="Phonics &amp; Rhymes&#10;Ginti 1-20"></textarea></label>
+        <label style="display:grid;gap:4px;flex:1">Highlights (ek line me ek item)
+          <textarea [(ngModel)]="coForm.highlights" rows="4" placeholder="Max 25 bachche per class"></textarea></label>
+        <label style="display:grid;gap:4px;flex:1">Image URL (ya upar file chuno)
+          <input [(ngModel)]="coForm.img" placeholder="https://..." /></label>
+      </div>
+      <div class="table-wrap" style="margin-top:10px"><table><thead><tr><th>Image</th><th>Title</th><th>Details</th><th>Action</th></tr></thead>
+      <tbody><tr *ngFor="let c of store.db.courses; let i = index">
+        <td><img [src]="c.img" alt="" style="width:70px;height:46px;object-fit:cover;border-radius:8px" /></td>
+        <td>{{ c.title }}</td><td>{{ c.short }}</td>
+        <td><button (click)="editCourse(i)">✏</button> <button (click)="delCourse(i)">🗑</button></td>
+      </tr></tbody></table></div>
+    </div>
+
+    <!-- E-BOOKS -->
+    <div class="card" *ngIf="cardsPage==='ebooks'">
+      <div class="row between" style="flex-wrap:wrap;gap:8px">
+        <h3>📖 E-Books — title, subject, chapters, PDF</h3>
+        <button class="btn primary" (click)="newBook()">➕ New Book</button>
+      </div>
+      <div class="tabs" style="margin-top:8px">
+        <button class="tab" *ngFor="let c of ebookClassList" [class.active]="ebookCls===c" (click)="ebookCls=c; newBook()">{{ c }}</button>
+      </div>
+      <div class="frow" style="margin-top:10px">
+        <input [(ngModel)]="ebForm.title" placeholder="Book title *" />
+        <input [(ngModel)]="ebForm.subject" placeholder="Subject (Hindi/English/Maths)" />
+        <input [(ngModel)]="ebForm.pages" type="number" placeholder="Pages" />
+        <input [(ngModel)]="ebForm.file" placeholder="PDF link (assets/... ya https)" style="flex:2" />
+        <input type="file" accept="image/*" (change)="ebImg($event)" title="Cover image" />
+        <button class="btn primary" (click)="saveBook()">💾 Save Book</button>
+        <button class="btn ghost" *ngIf="editEb" (click)="newBook()">Cancel</button>
+      </div>
+      <div class="card" *ngFor="let ch of ebForm.chapters; let i = index" style="margin:8px 0">
+        <div class="frow">
+          <input [(ngModel)]="ch.t" placeholder="Chapter title" style="flex:2" />
+          <button class="btn ghost" (click)="delChapter(i)">🗑 Chapter</button>
+        </div>
+        <textarea [(ngModel)]="ch.body" rows="3" placeholder="Ek line me ek point..."></textarea>
+      </div>
+      <button class="btn ghost" (click)="addChapter()">➕ Add Chapter</button>
+      <div class="table-wrap" style="margin-top:12px"><table><thead><tr><th>Title</th><th>Subject</th><th>Chapters</th><th>PDF</th><th>Action</th></tr></thead>
+      <tbody><tr *ngFor="let b of booksOf(ebookCls); let i = index">
+        <td>{{ b.title }}</td><td>{{ b.subject }}</td><td>{{ b.chapters.length }}</td>
+        <td><small class="muted">{{ b.file ? '✅' : '—' }}</small></td>
+        <td><button (click)="editBook(ebookCls, i)">✏</button> <button (click)="delBook(ebookCls, i)">🗑</button></td>
+      </tr></tbody></table></div>
+    </div>
+
+    <!-- VIDEOS -->
+    <div class="card" *ngIf="cardsPage==='videos'">
+      <div class="row between" style="flex-wrap:wrap;gap:8px">
+        <h3>🎬 Videos — title, thumbnail, link</h3>
+        <button class="btn primary" (click)="newVideo()">➕ New Video</button>
+      </div>
+      <div class="tabs" style="margin-top:8px">
+        <button class="tab" *ngFor="let c of classes" [class.active]="videoCls===c" (click)="videoCls=c; newVideo()">{{ c }}</button>
+      </div>
+      <div class="frow" style="margin-top:10px">
+        <input [(ngModel)]="viForm.title" placeholder="Video title *" />
+        <input [(ngModel)]="viForm.subject" placeholder="Subject" />
+        <input [(ngModel)]="viForm.url" placeholder="YouTube link (khaali = search chalega)" style="flex:2" />
+        <input type="file" accept="image/*" (change)="viThumb($event)" />
+        <button class="btn primary" (click)="saveVideoCard()">💾 Save</button>
+        <button class="btn ghost" *ngIf="editVi" (click)="newVideo()">Cancel</button>
+      </div>
+      <div class="table-wrap" style="margin-top:10px"><table><thead><tr><th>Thumbnail</th><th>Title</th><th>Subject</th><th>Link</th><th>Action</th></tr></thead>
+      <tbody><tr *ngFor="let v of store.db.videos[videoCls] || []; let i = index">
+        <td><img [src]="v.thumb" alt="" style="width:70px;height:46px;object-fit:cover;border-radius:8px" /></td>
+        <td>{{ v.title }}</td><td>{{ v.subject }}</td>
+        <td><small class="muted">{{ v.url ? '🔗 ' + v.url : '🔍 search' }}</small></td>
+        <td><button (click)="editVideo(videoCls, i)">✏</button> <button (click)="delVideoItem(videoCls, i)">🗑</button></td>
+      </tr></tbody></table></div>
+      <p class="muted">Nayi video card add karne ke liye upar form bharo. Apni mobile-upload video 📸 Media tab se aati hai.</p>
+    </div>
+
+    <!-- TEACHERS -->
+    <div class="card" *ngIf="cardsPage==='teachers'">
+      <div class="row between"><h3>👩‍🏫 Teachers — photo, name, bio</h3><button class="btn primary" (click)="newTeacher()">➕ Add Teacher</button></div>
+      <p class="muted">Ye hi cards Our Teachers page par dikhte hain. Photo chune, naam/role/bio badlo, Save dabao.</p>
+      <div class="card" *ngFor="let s of store.db.staff; let i = index" style="margin:10px 0">
+        <div class="frow" style="align-items:flex-start">
+          <img [src]="s.photo" alt="" style="width:96px;height:96px;object-fit:cover;border-radius:12px" />
+          <div style="flex:1;display:grid;gap:8px">
+            <div class="frow" style="padding:0">
+              <input [(ngModel)]="s.name" placeholder="Name *" />
+              <input [(ngModel)]="s.role" placeholder="Role (Teacher)" />
+              <input [(ngModel)]="s.sub" placeholder="Subject" />
+            </div>
+            <textarea [(ngModel)]="s.bio" rows="2" placeholder="Teacher ki detail / bio..."></textarea>
+          </div>
+          <div style="display:grid;gap:8px">
+            <input type="file" accept="image/*" (change)="tPhoto($event, i)" />
+            <button class="btn primary" (click)="saveTeacherCard(i)">💾 Save</button>
+            <button class="btn ghost" (click)="delTeacher(i)">🗑</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GALLERY -->
+    <div class="card" *ngIf="cardsPage==='gallery'">
+      <div class="row between"><h3>🖼 Gallery — photo + details</h3><button class="btn primary" (click)="newGal()">➕ New Photo</button></div>
+      <p class="muted">Notice Board & Gallery page ki cards yahin se edit hoti hain. (Apni photo upload 📸 Media tab se bhi ho sakti hai.)</p>
+      <div class="frow" style="margin-top:10px">
+        <input [(ngModel)]="gaForm.t" placeholder="Title *" />
+        <input [(ngModel)]="gaForm.d" placeholder="Short line" />
+        <input type="file" accept="image/*" (change)="gaImg($event)" />
+        <button class="btn primary" (click)="saveGal()">💾 Save</button>
+        <button class="btn ghost" *ngIf="editGa>=0" (click)="newGal()">Cancel</button>
+      </div>
+      <textarea [(ngModel)]="gaForm.info" rows="2" placeholder="Detail info (photo zoom hone par dikhegi)" style="width:100%;margin-bottom:12px"></textarea>
+      <div class="table-wrap"><table><thead><tr><th>Photo</th><th>Title</th><th>Line</th><th>Action</th></tr></thead>
+      <tbody><tr *ngFor="let g of store.db.gallery; let i = index">
+        <td><img [src]="g.img" alt="" style="width:70px;height:46px;object-fit:cover;border-radius:8px" /></td>
+        <td>{{ g.t }}</td><td>{{ g.d }}</td>
+        <td><button (click)="editGal(i)">✏</button> <button (click)="delGal(i)">🗑</button></td>
+      </tr></tbody></table></div>
     </div>
   </section>
 
