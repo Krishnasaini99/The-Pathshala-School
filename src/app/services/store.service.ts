@@ -54,6 +54,11 @@ export class StoreService {
     if (need(this.db.customVideos)) { this.db.customVideos = []; changed = true; }
     if (!this.db.homeVideo) { this.db.homeVideo = { mode: 'default', url: '' }; changed = true; }
     if (!this.db.cms || !this.db.cms.length) { this.db.cms = CMS_DEFAULTS.map((f) => ({ ...f })); changed = true; }
+    else {
+      // Naye CMS fields purane DB me add karo (warna Save silently fail hota tha)
+      const have = new Set(this.db.cms.map((c) => c.key));
+      for (const f of CMS_DEFAULTS) if (!have.has(f.key)) { this.db.cms.push({ ...f }); changed = true; }
+    }
     // New: editable website cards — purane DB me ye fields nahi thi, default se bhar do
     if (need(this.db.explore)) { this.db.explore = defaultExplore(); changed = true; }
     if (need(this.db.courses)) { this.db.courses = defaultCourses(); changed = true; }
@@ -73,7 +78,12 @@ export class StoreService {
   }
   cmsSet(key: string, value: string) {
     const f = this.db.cms?.find((c) => c.key === key);
-    if (f) { f.value = value; this.save(); }
+    if (f) f.value = value;
+    else {
+      this.db.cms = this.db.cms || [];
+      this.db.cms.push({ key, label: key, group: 'Custom', type: 'text', value });
+    }
+    this.save();
   }
 
   private load(): DB {

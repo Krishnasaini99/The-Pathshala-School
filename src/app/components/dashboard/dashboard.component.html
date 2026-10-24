@@ -204,6 +204,7 @@
         <button class="tab" [class.active]="cardsPage==='videos'" (click)="cardsPage='videos'; newVideo()">🎬 Videos</button>
         <button class="tab" [class.active]="cardsPage==='teachers'" (click)="cardsPage='teachers'">👩‍🏫 Teachers</button>
         <button class="tab" [class.active]="cardsPage==='gallery'" (click)="cardsPage='gallery'; newGal()">🖼 Gallery</button>
+        <button class="tab" [class.active]="cardsPage==='contact'" (click)="cardsPage='contact'; loadContact()">📞 Contact</button>
       </div>
     </div>
 
@@ -366,6 +367,27 @@
         <td>{{ g.t }}</td><td>{{ g.d }}</td>
         <td><button (click)="editGal(i)">✏</button> <button (click)="delGal(i)">🗑</button></td>
       </tr></tbody></table></div>
+    </div>
+    <!-- CONTACT / ADDRESS -->
+    <div class="card" *ngIf="cardsPage==='contact'">
+      <h3>📞 Contact &amp; Footer — address, phone, timing</h3>
+      <p class="muted">Yahan address badlo — Contact page aur website ke footer dono jagah turant update hoga. Har line ke liye Enter dabao.</p>
+      <div class="two" style="align-items:flex-start">
+        <label style="display:grid;gap:6px;font-weight:700">📍 Address
+          <textarea [(ngModel)]="contactForm.address" rows="4"></textarea></label>
+        <label style="display:grid;gap:6px;font-weight:700">⏰ Timing
+          <textarea [(ngModel)]="contactForm.timing" rows="4"></textarea></label>
+      </div>
+      <div class="two" style="align-items:flex-start;margin-top:10px">
+        <label style="display:grid;gap:6px;font-weight:700">📞 Phone line
+          <textarea [(ngModel)]="contactForm.phone" rows="3"></textarea></label>
+        <label style="display:grid;gap:6px;font-weight:700">🦶 Footer line (© ke baad)
+          <textarea [(ngModel)]="contactForm.footer" rows="3"></textarea></label>
+      </div>
+      <div class="row" style="margin-top:12px">
+        <button class="btn primary" (click)="saveContact()">💾 Save Contact Info</button>
+        <span class="ok" *ngIf="msg">{{ msg }}</span>
+      </div>
     </div>
   </section>
 

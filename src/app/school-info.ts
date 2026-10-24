@@ -16,6 +16,7 @@ export const CMS_DEFAULTS: CMSField[] = [
   { key: 'addressText', label: 'Contact — Address', group: 'Contact', type: 'textarea', value: 'The PathShala School,\nMain Road, Saragaon,\nRaipur, Chhattisgarh 493225' },
   { key: 'phoneText', label: 'Contact — Phone line', group: 'Contact', type: 'text', value: '+91 88716 26560\nMon-Sat: 8 AM - 2 PM' },
   { key: 'timingText', label: 'Contact — Timing', group: 'Contact', type: 'text', value: 'School: 8 AM - 2 PM\nOffice: 9 AM - 4 PM' },
+  { key: 'footerNote', label: 'Footer — Address line', group: 'Contact', type: 'text', value: 'The PathShala School, Saragaon Raipur. All rights reserved.' },
 ];
 
 export const SCHOOL = {

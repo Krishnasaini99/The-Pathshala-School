@@ -44,13 +44,14 @@
       <a routerLink="/videos">Videos</a>
       <a routerLink="/contact">Contact</a>
     </div>
+    <div class="muted" style="max-width:260px;white-space:pre-line;font-size:12px">{{ footerAddress }}</div>
     <div class="social-row">
       <a class="soc-wa" [href]="social.whatsapp" target="_blank" rel="noopener" title="WhatsApp">💬<small>WhatsApp</small></a>
       <a class="soc-ig" *ngIf="social.instagram" [href]="social.instagram" target="_blank" rel="noopener" title="Instagram">📸<small>Instagram</small></a>
       <a class="soc-fb" *ngIf="social.facebook" [href]="social.facebook" target="_blank" rel="noopener" title="Facebook">👍<small>Facebook</small></a>
     </div>
   </div>
-  <div class="wrap foot">© 2026 The PathShala School, Saragaon Raipur. All rights reserved.</div>
+  <div class="wrap foot">© {{ year }} {{ footerNote }}</div>
 </footer>
 
 <nav class="tabbar" aria-label="Main navigation">

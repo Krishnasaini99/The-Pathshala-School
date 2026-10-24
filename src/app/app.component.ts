@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from './services/auth.service';
+import { StoreService } from './services/store.service';
 import { SCHOOL } from './school-info';
 
 @Component({
@@ -20,9 +21,12 @@ export class AppComponent {
   pass = 'pathshala123';
   err = false;
 
-  constructor(public auth: AuthService, private router: Router) {
+  constructor(public auth: AuthService, public store: StoreService, private router: Router) {
     this.applyTheme();
   }
+  get year() { return new Date().getFullYear(); }
+  get footerNote() { return this.store.cmsGet('footerNote', 'The PathShala School, Saragaon Raipur. All rights reserved.'); }
+  get footerAddress() { return this.store.cmsGet('addressText', 'The PathShala School,\nMain Road, Saragaon,\nRaipur, Chhattisgarh 493225'); }
   applyTheme() {
     document.documentElement.dataset['theme'] = this.dark ? 'dark' : 'light';
     localStorage.setItem('ps_theme', this.dark ? 'dark' : 'light');

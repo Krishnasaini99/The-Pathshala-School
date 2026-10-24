@@ -57,12 +57,28 @@ export class DashboardComponent {
   saveCms(f: CMSField) { this.store.cmsSet(f.key, f.value); alert('✅ Save ho gaya — website par dikhega'); }
 
   // ============ 🧩 CONTENT MANAGER (site ke cards edit) ============
-  cardsPage: 'explore' | 'courses' | 'ebooks' | 'videos' | 'teachers' | 'gallery' = 'explore';
+  cardsPage: 'explore' | 'courses' | 'ebooks' | 'videos' | 'teachers' | 'gallery' | 'contact' = 'explore';
   msg = '';
   private flash(m: string) { this.msg = m; setTimeout(() => { if (this.msg === m) this.msg = ''; }, 2500); }
   ebookCls = EBOOK_CLASSES[0];
   ebookClassList = EBOOK_CLASSES;
   videoCls = CLASSES[0];
+  contactForm = { address: '', phone: '', timing: '', footer: '' };
+  loadContact() {
+    this.contactForm = {
+      address: this.store.cmsGet('addressText', ''),
+      phone: this.store.cmsGet('phoneText', ''),
+      timing: this.store.cmsGet('timingText', ''),
+      footer: this.store.cmsGet('footerNote', ''),
+    };
+  }
+  saveContact() {
+    this.store.cmsSet('addressText', this.contactForm.address);
+    this.store.cmsSet('phoneText', this.contactForm.phone);
+    this.store.cmsSet('timingText', this.contactForm.timing);
+    this.store.cmsSet('footerNote', this.contactForm.footer);
+    this.flash('✅ Address save ho gaya — Contact page + footer par dikhega');
+  }
   private readImage(ev: Event): Promise<string> {
     return new Promise((res, rej) => {
       const f = (ev.target as HTMLInputElement).files?.[0];
@@ -232,6 +248,7 @@ export class DashboardComponent {
     this.setUser = c.u;
     this.hvMode = this.store.db.homeVideo?.mode || 'default';
     this.hvUrl = this.store.db.homeVideo?.url || '';
+    this.loadContact();
     if (this.store.db.students.length) this.fForm.student = this.store.db.students[0].name;
   }
 
