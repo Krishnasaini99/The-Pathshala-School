@@ -73,11 +73,15 @@ export class DashboardComponent {
     };
   }
   saveContact() {
-    this.store.cmsSet('addressText', this.contactForm.address);
-    this.store.cmsSet('phoneText', this.contactForm.phone);
-    this.store.cmsSet('timingText', this.contactForm.timing);
-    this.store.cmsSet('footerNote', this.contactForm.footer);
-    this.flash('✅ Address save ho gaya — Contact page + footer par dikhega');
+    try {
+      this.store.cmsSet('addressText', this.contactForm.address);
+      this.store.cmsSet('phoneText', this.contactForm.phone);
+      this.store.cmsSet('timingText', this.contactForm.timing);
+      this.store.cmsSet('footerNote', this.contactForm.footer);
+      this.flash('✅ Address save ho gaya — Contact page + footer par dikhega');
+    } catch {
+      alert('❌ Storage full hai — address save nahi hua. Backup lekar kuch photos delete karo.');
+    }
   }
   private readImage(ev: Event): Promise<string> {
     return new Promise((res, rej) => {
@@ -87,13 +91,13 @@ export class DashboardComponent {
       rd.onload = () => {
         const img = new Image();
         img.onload = () => {
-          const max = 900;
+          const max = 700;
           const sc = Math.min(1, max / Math.max(img.width, img.height));
           const c = document.createElement('canvas');
           c.width = Math.round(img.width * sc);
           c.height = Math.round(img.height * sc);
           c.getContext('2d')!.drawImage(img, 0, 0, c.width, c.height);
-          res(c.toDataURL('image/jpeg', 0.72));
+          res(c.toDataURL('image/jpeg', 0.6));
         };
         img.onerror = () => rej('bad image');
         img.src = rd.result as string;
@@ -101,6 +105,20 @@ export class DashboardComponent {
       rd.onerror = () => rej('read fail');
       rd.readAsDataURL(f);
     });
+  }
+
+  /** Save karo — storage full ho to saaf message do (silent fail nahi) */
+  private saveSafe(): boolean {
+    try {
+      this.store.save();
+      return true;
+    } catch {
+      alert('❌ Browser storage full hai — photo save nahi hui.\n\nUpay: Dashboard → Backup se JSON export karo, phir kuch purani photos delete karke dobara try karo. Ya chhoti photo chuno.');
+      return false;
+    }
+  }
+  storageKB(): number {
+    try { return Math.round((localStorage.getItem('pathshala_db_v1') || '').length / 1024); } catch { return 0; }
   }
 
   // ---- Home: Explore cards ----
@@ -113,10 +131,19 @@ export class DashboardComponent {
     const o: ExploreCard = { ...this.exForm, title: this.exForm.title.trim(), desc: this.exForm.desc.trim() };
     if (this.editEx >= 0) this.store.db.explore[this.editEx] = o;
     else this.store.db.explore.push(o);
-    this.store.save(); this.newExplore(); this.flash('✅ Explore card save ho gaya');
+    if (!this.saveSafe()) return;
+    this.newExplore(); this.flash('✅ Explore card save ho gaya');
   }
   delExplore(i: number) { if (confirm('Card delete?')) { this.store.db.explore.splice(i, 1); this.store.save(); } }
-  async exImg(ev: Event) { try { this.exForm.img = await this.readImage(ev); } catch { this.flash('❌ Image read nahi hui'); } }
+  async exImg(ev: Event) {
+    try {
+      this.exForm.img = await this.readImage(ev);
+      if (this.editEx >= 0) {
+        this.store.db.explore[this.editEx].img = this.exForm.img;
+        if (this.saveSafe()) this.flash('✅ Photo save ho gayi — website par dikhegi');
+      } else this.flash('✅ Photo ready — ab Save Card dabao');
+    } catch { this.flash('❌ Image read nahi hui'); }
+  }
 
   // ---- Courses cards ----
   editCo = -1;
@@ -141,10 +168,19 @@ export class DashboardComponent {
     };
     if (this.editCo >= 0) this.store.db.courses[this.editCo] = o;
     else this.store.db.courses.push(o);
-    this.store.save(); this.newCourse(); this.flash('✅ Course card save ho gaya');
+    if (!this.saveSafe()) return;
+    this.newCourse(); this.flash('✅ Course card save ho gaya');
   }
   delCourse(i: number) { if (confirm('Course delete?')) { this.store.db.courses.splice(i, 1); this.store.save(); } }
-  async coImg(ev: Event) { try { this.coForm.img = await this.readImage(ev); } catch { this.flash('❌ Image read nahi hui'); } }
+  async coImg(ev: Event) {
+    try {
+      this.coForm.img = await this.readImage(ev);
+      if (this.editCo >= 0) {
+        this.store.db.courses[this.editCo].img = this.coForm.img;
+        if (this.saveSafe()) this.flash('✅ Photo save ho gayi — website par dikhegi');
+      } else this.flash('✅ Photo ready — ab Save dabao');
+    } catch { this.flash('❌ Image read nahi hui'); }
+  }
 
   // ---- E-Books ----
   editEb: { cls: string; i: number } | null = null;
@@ -162,7 +198,6 @@ export class DashboardComponent {
     this.editEb = null;
     this.ebForm = { title: '', subject: '', pages: 20, file: '', img: '', chapters: [{ t: 'Chapter 1', body: '' }] };
   }
-  async ebImg(ev: Event) { try { this.ebForm.img = await this.readImage(ev); } catch { this.flash('❌ Image read nahi hui'); } }
   addChapter() { this.ebForm.chapters.push({ t: 'Chapter ' + (this.ebForm.chapters.length + 1), body: '' }); }
   delChapter(i: number) { this.ebForm.chapters.splice(i, 1); }
   saveBook() {
@@ -178,9 +213,19 @@ export class DashboardComponent {
     if (!this.store.db.ebooks[this.ebookCls]) this.store.db.ebooks[this.ebookCls] = [];
     if (this.editEb) this.store.db.ebooks[this.editEb.cls][this.editEb.i] = b;
     else this.store.db.ebooks[this.ebookCls].push(b);
-    this.store.save(); this.newBook(); this.flash('✅ E-Book save ho gaya — ' + this.ebookCls);
+    if (!this.saveSafe()) return;
+    this.newBook(); this.flash('✅ E-Book save ho gaya — ' + this.ebookCls);
   }
   delBook(cls: string, i: number) { if (confirm('Book delete?')) { this.store.db.ebooks[cls].splice(i, 1); this.store.save(); } }
+  async ebImg(ev: Event) {
+    try {
+      this.ebForm.img = await this.readImage(ev);
+      if (this.editEb) {
+        this.store.db.ebooks[this.editEb.cls][this.editEb.i].img = this.ebForm.img;
+        if (this.saveSafe()) this.flash('✅ Cover save ho gaya — website par dikhega');
+      } else this.flash('✅ Cover ready — ab Save Book dabao');
+    } catch { this.flash('❌ Image read nahi hui'); }
+  }
 
   // ---- Videos ----
   editVi: { cls: string; i: number } | null = null;
@@ -203,16 +248,27 @@ export class DashboardComponent {
     if (!this.store.db.videos[this.videoCls]) this.store.db.videos[this.videoCls] = [];
     if (this.editVi) this.store.db.videos[this.editVi.cls][this.editVi.i] = v as any;
     else this.store.db.videos[this.videoCls].push(v as any);
-    this.store.save(); this.newVideo(); this.flash('✅ Video card save ho gaya — ' + this.videoCls);
+    if (!this.saveSafe()) return;
+    this.newVideo(); this.flash('✅ Video card save ho gaya — ' + this.videoCls);
   }
   delVideoItem(cls: string, i: number) { if (confirm('Video delete?')) { this.store.db.videos[cls].splice(i, 1); this.store.save(); } }
-  async viThumb(ev: Event) { try { this.viForm.thumb = await this.readImage(ev); } catch { this.flash('❌ Image read nahi hui'); } }
+  async viThumb(ev: Event) {
+    try {
+      this.viForm.thumb = await this.readImage(ev);
+      if (this.editVi) {
+        this.store.db.videos[this.editVi.cls][this.editVi.i].thumb = this.viForm.thumb;
+        if (this.saveSafe()) this.flash('✅ Thumbnail save ho gaya');
+      } else this.flash('✅ Thumbnail ready — ab Save dabao');
+    } catch { this.flash('❌ Image read nahi hui'); }
+  }
 
   // ---- Teachers (Staff card photo + bio) ----
-  saveTeacherCard(i: number) { this.store.save(); this.flash('✅ Teacher card save ho gaya'); }
+  saveTeacherCard(i: number) { if (this.saveSafe()) this.flash('✅ Teacher card save ho gaya'); }
   async tPhoto(ev: Event, i: number) {
-    try { this.store.db.staff[i].photo = await this.readImage(ev); this.store.save(); this.flash('✅ Photo update ho gayi'); }
-    catch { this.flash('❌ Image read nahi hui'); }
+    try {
+      this.store.db.staff[i].photo = await this.readImage(ev);
+      if (this.saveSafe()) this.flash('✅ Photo update ho gayi — website par dikhegi');
+    } catch { this.flash('❌ Image read nahi hui'); }
   }
   delTeacher(i: number) { if (confirm('Teacher delete?')) { this.store.db.staff.splice(i, 1); this.store.save(); } }
   newTeacher() { this.store.db.staff.push({ name: 'Naya Teacher', role: 'Teacher', sub: '', phone: '', sal: 0, photo: '', bio: '' }); this.store.save(); }
@@ -227,10 +283,19 @@ export class DashboardComponent {
     const o = { ...this.gaForm, t: this.gaForm.t.trim(), d: this.gaForm.d.trim(), info: this.gaForm.info.trim() || this.gaForm.t.trim() };
     if (this.editGa >= 0) this.store.db.gallery[this.editGa] = o;
     else this.store.db.gallery.push(o);
-    this.store.save(); this.newGal(); this.flash('✅ Gallery card save ho gaya');
+    if (!this.saveSafe()) return;
+    this.newGal(); this.flash('✅ Gallery card save ho gaya');
   }
   delGal(i: number) { if (confirm('Photo delete?')) { this.store.db.gallery.splice(i, 1); this.store.save(); } }
-  async gaImg(ev: Event) { try { this.gaForm.img = await this.readImage(ev); } catch { this.flash('❌ Image read nahi hui'); } }
+  async gaImg(ev: Event) {
+    try {
+      this.gaForm.img = await this.readImage(ev);
+      if (this.editGa >= 0) {
+        this.store.db.gallery[this.editGa].img = this.gaForm.img;
+        if (this.saveSafe()) this.flash('✅ Photo save ho gayi — gallery me dikhegi');
+      } else this.flash('✅ Photo ready — ab Save dabao');
+    } catch { this.flash('❌ Image read nahi hui'); }
+  }
 
   // home page video (Media se change)
   hvMode: 'default' | 'youtube' | 'file' = 'default';

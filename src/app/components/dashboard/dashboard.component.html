@@ -194,6 +194,8 @@
         <div>
           <h3>🧩 Content Manager — Website ke cards edit karo</h3>
           <p class="muted">Har section ka card (image + details) yahin se badlo — Save dabao, website par turant dikhega.</p>
+          <p class="muted" style="color:#f59e0b">⚠️ Photo upload ke baad preview dikhega — phir <b>💾 Save</b> dabana zaroori hai. (Ye data isi browser me save hota hai.)</p>
+          <small class="muted">💾 Storage used: {{ storageKB() }} KB / ~5000 KB</small>
         </div>
         <p class="ok" *ngIf="msg" style="margin:0">{{ msg }}</p>
       </div>
@@ -221,6 +223,7 @@
           <option value="/about">About page</option><option value="/">Home</option>
         </select>
         <input type="file" accept="image/*" (change)="exImg($event)" />
+        <img *ngIf="exForm.img" [src]="exForm.img" alt="preview" style="width:70px;height:48px;object-fit:cover;border-radius:8px" />
         <button class="btn primary" (click)="saveExplore()">💾 Save Card</button>
         <button class="btn ghost" *ngIf="editEx>=0" (click)="newExplore()">Cancel</button>
       </div>
@@ -243,6 +246,7 @@
         <input [(ngModel)]="coForm.teacher" placeholder="Teacher name" />
         <input [(ngModel)]="coForm.level" placeholder="Level (Class 1-5)" />
         <input type="file" accept="image/*" (change)="coImg($event)" />
+        <img *ngIf="coForm.img" [src]="coForm.img" alt="preview" style="width:70px;height:48px;object-fit:cover;border-radius:8px" />
         <button class="btn primary" (click)="saveCourse()">💾 Save</button>
         <button class="btn ghost" *ngIf="editCo>=0" (click)="newCourse()">Cancel</button>
       </div>
@@ -279,6 +283,7 @@
         <input [(ngModel)]="ebForm.pages" type="number" placeholder="Pages" />
         <input [(ngModel)]="ebForm.file" placeholder="PDF link (assets/... ya https)" style="flex:2" />
         <input type="file" accept="image/*" (change)="ebImg($event)" title="Cover image" />
+        <img *ngIf="ebForm.img" [src]="ebForm.img" alt="cover" style="width:50px;height:64px;object-fit:cover;border-radius:6px" />
         <button class="btn primary" (click)="saveBook()">💾 Save Book</button>
         <button class="btn ghost" *ngIf="editEb" (click)="newBook()">Cancel</button>
       </div>
@@ -312,6 +317,7 @@
         <input [(ngModel)]="viForm.subject" placeholder="Subject" />
         <input [(ngModel)]="viForm.url" placeholder="YouTube link (khaali = search chalega)" style="flex:2" />
         <input type="file" accept="image/*" (change)="viThumb($event)" />
+        <img *ngIf="viForm.thumb" [src]="viForm.thumb" alt="thumb" style="width:70px;height:48px;object-fit:cover;border-radius:8px" />
         <button class="btn primary" (click)="saveVideoCard()">💾 Save</button>
         <button class="btn ghost" *ngIf="editVi" (click)="newVideo()">Cancel</button>
       </div>
@@ -357,6 +363,7 @@
         <input [(ngModel)]="gaForm.t" placeholder="Title *" />
         <input [(ngModel)]="gaForm.d" placeholder="Short line" />
         <input type="file" accept="image/*" (change)="gaImg($event)" />
+        <img *ngIf="gaForm.img" [src]="gaForm.img" alt="preview" style="width:70px;height:48px;object-fit:cover;border-radius:8px" />
         <button class="btn primary" (click)="saveGal()">💾 Save</button>
         <button class="btn ghost" *ngIf="editGa>=0" (click)="newGal()">Cancel</button>
       </div>
