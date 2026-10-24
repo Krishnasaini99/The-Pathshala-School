@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { DB } from '../models';
 import { CMS_DEFAULTS } from '../school-info';
 import { defaultCourses, defaultEbooks, defaultVideos, defaultGallery, defaultExplore, DEFAULT_TEACHER_PHOTOS, DEFAULT_TEACHER_BIOS } from '../defaults';
+import { schedulePush } from '../cloud';
 
 const KEY = 'pathshala_db_v1';
 const today = () => new Date().toISOString().slice(0, 10);
@@ -95,7 +96,15 @@ export class StoreService {
     localStorage.setItem(KEY, JSON.stringify(s));
     return s;
   }
-  save() { localStorage.setItem(KEY, JSON.stringify(this.db)); }
+  save() {
+    try {
+      localStorage.setItem(KEY, JSON.stringify(this.db));
+    } catch {
+      // Local cache full — cloud par data safe rahega, sirf offline cache purana hoga
+      console.warn('[store] local cache full — cloud sync par bharosa');
+    }
+    schedulePush(this.db);
+  }
   reset() { this.db = seed(); this.save(); }
   exportJson(): string { return JSON.stringify(this.db, null, 2); }
   exportEncrypted(): string { return btoa(unescape(encodeURIComponent(JSON.stringify(this.db)))); }

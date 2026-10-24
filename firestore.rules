@@ -1,0 +1,19 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Website ka public content — sab padh sakte hain
+    match /site/{doc} {
+      allow read: if true;
+      allow write: if true;
+    }
+    // Uploaded photos
+    match /media/{doc} {
+      allow read: if true;
+      allow write: if true;
+    }
+    // Baaki sab band
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
