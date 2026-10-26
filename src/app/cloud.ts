@@ -18,6 +18,7 @@ const API = CLOUD.apiKey;
 
 export const DB_KEY = 'pathshala_db_v1';
 const V_KEY = 'ps_cloud_v';
+const DIRTY_KEY = 'ps_dirty';
 
 /* ---------------- helpers ---------------- */
 
@@ -132,11 +133,13 @@ let pending: any = null;
 export function schedulePush(db: any): void {
   if (!CLOUD.enabled) return;
   pending = db;
+  try { localStorage.setItem(DIRTY_KEY, '1'); } catch { /* ignore */ }
   if (!pushing) void drain();
 }
 
 async function drain(): Promise<void> {
   pushing = true;
+  let failed = false;
   try {
     while (pending) {
       const snapshot = pending;
@@ -144,11 +147,16 @@ async function drain(): Promise<void> {
       try {
         await pushCloud(JSON.parse(JSON.stringify(snapshot)));
       } catch (e) {
+        failed = true;
         console.warn('[cloud] push failed', e);
       }
     }
   } finally {
     pushing = false;
+  }
+  // Sab kuch cloud par chala gaya to dirty flag hatao (offline tha to rahega → next load par retry)
+  if (!failed && !pending) {
+    try { localStorage.removeItem(DIRTY_KEY); } catch { /* ignore */ }
   }
 }
 
@@ -178,6 +186,11 @@ export async function bootSync(): Promise<void> {
   if (!CLOUD.enabled) return;
   const work = (async () => {
     try {
+      // Offline ke waqt bacha hua edit ho to pehle wo cloud par bhejo (warna cloud purana data de dega)
+      if (localStorage.getItem(DIRTY_KEY) === '1') {
+        const local = localStorage.getItem(DB_KEY);
+        if (local) { schedulePush(JSON.parse(local)); return; }
+      }
       const res = await pullCloud();
       if (res === 'missing') {
         const local = localStorage.getItem(DB_KEY);
