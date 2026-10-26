@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { DB } from '../models';
 import { CMS_DEFAULTS } from '../school-info';
-import { defaultCourses, defaultEbooks, defaultVideos, defaultGallery, defaultExplore, DEFAULT_TEACHER_PHOTOS, DEFAULT_TEACHER_BIOS } from '../defaults';
+import { defaultCourses, defaultEbooks, defaultVideos, defaultGallery, defaultExplore, DEFAULT_EXPLORE, DEFAULT_TEACHER_PHOTOS, DEFAULT_TEACHER_BIOS } from '../defaults';
 import { schedulePush } from '../cloud';
 
 const KEY = 'pathshala_db_v1';
@@ -62,6 +62,16 @@ export class StoreService {
     }
     // New: editable website cards — purane DB me ye fields nahi thi, default se bhar do
     if (need(this.db.explore)) { this.db.explore = defaultExplore(); changed = true; }
+    else {
+      // Explore cards me photo nahi hai to default photo lagao (naya design)
+      for (let i = 0; i < this.db.explore.length; i++) {
+        const e = this.db.explore[i];
+        if (!e.img) {
+          const d = DEFAULT_EXPLORE.find((x) => x.title === e.title) || DEFAULT_EXPLORE[i];
+          if (d?.img) { e.img = d.img; changed = true; }
+        }
+      }
+    }
     if (need(this.db.courses)) { this.db.courses = defaultCourses(); changed = true; }
     if (need(this.db.ebooks)) { this.db.ebooks = defaultEbooks(); changed = true; }
     if (need(this.db.videos)) { this.db.videos = defaultVideos(); changed = true; }

@@ -54,15 +54,6 @@
   <div class="wrap foot">© {{ year }} {{ footerNote }}</div>
 </footer>
 
-<nav class="tabbar" aria-label="Main navigation">
-  <a routerLink="/" routerLinkActive="on" [routerLinkActiveOptions]="{exact:true}"><span>🏠</span><small>Home</small></a>
-  <a routerLink="/courses" routerLinkActive="on"><span>📚</span><small>Courses</small></a>
-  <a routerLink="/ebooks" routerLinkActive="on"><span>📘</span><small>E-Books</small></a>
-  <a routerLink="/videos" routerLinkActive="on"><span>🎬</span><small>Videos</small></a>
-  <a routerLink="/contact" routerLinkActive="on"><span>📞</span><small>Contact</small></a>
-  <button (click)="menuOpen = !menuOpen"><span>☰</span><small>More</small></button>
-</nav>
-
 <div class="modal" *ngIf="showLogin">
   <div class="modal-box">
     <h3>🔐 School Login</h3>

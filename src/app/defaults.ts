@@ -6,12 +6,12 @@ import { ExploreCard } from './models';
 
 /** Home page — Explore PathShala cards (default) */
 export const DEFAULT_EXPLORE: ExploreCard[] = [
-  { icon: '📚', title: 'Courses', desc: 'Pre-Primary se Secondary, Sports aur Arts tak →', link: '/courses' },
-  { icon: '📘', title: 'E-Books', desc: 'Class-wise books + free PDF downloads →', link: '/ebooks' },
-  { icon: '🎬', title: 'Videos', desc: 'Learning videos har class ke liye →', link: '/videos' },
-  { icon: '👩‍🏫', title: 'Our Teachers', desc: 'Anubhavi aur caring faculty →', link: '/teachers' },
-  { icon: '📸', title: 'Gallery & Notices', desc: 'Photos aur notice board →', link: '/gallery' },
-  { icon: '📞', title: 'Contact & Admission', desc: 'Form bhariye, call aayega →', link: '/contact' },
+  { icon: '📚', title: 'Courses', desc: 'Pre-Primary se Secondary, Sports aur Arts tak →', link: '/courses', img: 'https://images.unsplash.com/photo-1571260899304-425eee4c7efc?auto=format&fit=crop&w=800&q=70' },
+  { icon: '📘', title: 'E-Books', desc: 'Class-wise books + free PDF downloads →', link: '/ebooks', img: 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=800&q=70' },
+  { icon: '🎬', title: 'Videos', desc: 'Learning videos har class ke liye →', link: '/videos', img: 'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?auto=format&fit=crop&w=800&q=70' },
+  { icon: '👩‍🏫', title: 'Our Teachers', desc: 'Anubhavi aur caring faculty →', link: '/teachers', img: 'https://images.pexels.com/photos/8613120/pexels-photo-8613120.jpeg?auto=compress&cs=tinysrgb&w=800' },
+  { icon: '📸', title: 'Gallery & Notices', desc: 'Photos aur notice board →', link: '/gallery', img: 'https://images.pexels.com/photos/28389321/pexels-photo-28389321.jpeg?auto=compress&cs=tinysrgb&w=800' },
+  { icon: '📞', title: 'Contact & Admission', desc: 'Form bhariye, call aayega →', link: '/contact', img: 'https://images.unsplash.com/photo-1423666639041-f56000c27a9a?auto=format&fit=crop&w=800&q=70' },
 ];
 
 /** Teacher cards default photo + bio (staff ke saath index-wise use hota hai) */
