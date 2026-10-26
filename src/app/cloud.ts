@@ -115,9 +115,9 @@ export async function pullCloud(): Promise<'missing' | 'unchanged' | 'updated'> 
 
   const images = await loadMedia();
   const db = expandImages(JSON.parse(raw), images);
-  // Purana local data safety ke liye backup rakh do (cloud se replace hone se pehle)
+  // Purana local data safety ke liye backup rakh do (cloud se replace hone se pehle) — pehla backup hi rakho
   const old = localStorage.getItem(DB_KEY);
-  if (old) localStorage.setItem('ps_db_backup', old);
+  if (old && !localStorage.getItem('ps_db_backup')) localStorage.setItem('ps_db_backup', old);
   localStorage.setItem(DB_KEY, JSON.stringify(db));
   localStorage.setItem(V_KEY, v);
   return 'updated';

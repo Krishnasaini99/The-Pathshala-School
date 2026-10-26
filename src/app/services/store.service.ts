@@ -116,6 +116,27 @@ export class StoreService {
     schedulePush(this.db);
   }
   reset() { this.db = seed(); this.save(); }
+  /** Cloud sync se pehle ka purana local data wapas lao (agar backup mila ho) */
+  restoreLocalBackup(): boolean {
+    try {
+      const raw = localStorage.getItem('ps_db_backup');
+      if (!raw) return false;
+      const obj = JSON.parse(raw);
+      if (!obj || !obj.students) return false;
+      this.db = obj as DB;
+      this.migrate();
+      this.save();
+      return true;
+    } catch { return false; }
+  }
+  hasLocalBackup(): boolean {
+    try {
+      const raw = localStorage.getItem('ps_db_backup');
+      if (!raw) return false;
+      const obj = JSON.parse(raw);
+      return !!(obj && obj.students);
+    } catch { return false; }
+  }
   exportJson(): string { return JSON.stringify(this.db, null, 2); }
   exportEncrypted(): string { return btoa(unescape(encodeURIComponent(JSON.stringify(this.db)))); }
   importText(t: string): boolean {

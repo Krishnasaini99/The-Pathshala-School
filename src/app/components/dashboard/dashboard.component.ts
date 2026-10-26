@@ -72,6 +72,16 @@ export class DashboardComponent {
       footer: this.store.cmsGet('footerNote', ''),
     };
   }
+  restoreBackup() {
+    if (!confirm('Purana local data wapas laayein? Abhi ka data cloud me safe rahega.')) return;
+    if (this.store.restoreLocalBackup()) {
+      this.loadContact();
+      this.flash('✅ Purana data wapas aa gaya — cloud par bhi save ho gaya');
+      alert('✅ Purana data wapas aa gaya.\n\nWebsite kholo (Ctrl+F5) — address/phone wahi purana dikhega.');
+    } else {
+      alert('❌ Is browser me purana backup nahi mila.');
+    }
+  }
   saveContact() {
     try {
       this.store.cmsSet('addressText', this.contactForm.address);

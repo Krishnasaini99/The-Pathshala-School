@@ -438,7 +438,14 @@
         <textarea id="importBox" rows="6" [(ngModel)]="backupText" placeholder="Encrypted backup yahan..."></textarea>
         <div class="row"><button class="btn primary" (click)="imp()">⬆ Import</button><button class="btn danger" (click)="wipe()">🗑 Clear</button></div>
       </div>
-      <div class="card"><h3>ℹ Info</h3><p>Version: <b>v1.0.0 Angular</b><br />Storage: <b>Offline-first (localStorage)</b></p></div>
+      <div class="card"><h3>♻️ Purana Data Wapas Lao</h3>
+        <p class="muted">Cloud sync lagne se pehle jo data aapke browser me tha (address, phone, photos) — wo backup me safe hai. Ek click me wapas laao.</p>
+        <div class="row">
+          <button class="btn primary" (click)="restoreBackup()" [disabled]="!store.hasLocalBackup()">♻️ Restore Purana Data</button>
+          <span class="muted" *ngIf="!store.hasLocalBackup()">Is browser me purana backup nahi mila</span>
+        </div>
+      </div>
+      <div class="card"><h3>ℹ Info</h3><p>Version: <b>v1.0.0 Angular</b><br />Storage: <b>Cloud (Firestore) + offline cache</b></p></div>
     </div>
   </section>
 </div>
